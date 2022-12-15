@@ -8895,4 +8895,1638 @@ mysql> select * from Actors;
 +----+-----------+----------+------------+--------+---------------+--------------------+
 11 rows in set (0.00 sec)
 
+mysql> -------------------------------------------------------------------------------------------- DAY 4 -------------------------------------------------------------------------------------
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '--------------------------------------------------------------------------------' at line 1
 mysql> 
+mysql> 
+mysql> CREATE VIEW DigitalAssetCount AS 
+    -> SELECT ActorId, COUNT(AssetType) AS NumberOfAssets 
+    -> FROM DigitalAssets
+    -> GROUP BY ActorId;
+ERROR 1146 (42S02): Table 'MovieIndustry.DigitalAssets' doesn't exist
+mysql> create view MovieView as delect Id, count(Movie_Genera) as Movie_Types from Movies Group by Id;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'delect Id, count(Movie_Genera) as Movie_Types from Movies Group by Id' at line 1
+mysql> create view MovieView as select Id, count(Movie_Genera) as Movie_Types from Movies Group by Id;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> select * from MovieView;
++------+-------------+
+| Id   | Movie_Types |
++------+-------------+
+|    2 |           1 |
+|    7 |           1 |
+|   10 |           1 |
+|    3 |           2 |
+|    9 |           1 |
+|    1 |           1 |
+|    8 |           1 |
+|    5 |           1 |
+|    6 |           1 |
+|   11 |           1 |
+|    4 |           2 |
++------+-------------+
+11 rows in set (0.01 sec)
+
+mysql> create view Actor_have_movies as concat(FirstName," ",LastName) as Actor/Actress, count(Id) as "Movies Count", from Actors join Movies using(Id);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'concat(FirstName," ",LastName) as Actor/Actress, count(Id) as "Movies Count", fr' at line 1
+mysql> create view Actor_have_movies as select concat(FirstName," ",LastName) as Actor/Actress, count(Id) as "Movies Count", from Actors join Movies using(Id);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '/Actress, count(Id) as "Movies Count", from Actors join Movies using(Id)' at line 1
+mysql> create view Actor_have_movies as select concat(FirstName," ",LastName) as "Actor/Actress", count(Id) as "Movies Count", from Actors join Movies using(Id);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'from Actors join Movies using(Id)' at line 1
+mysql> create view Actor_have_movies as select concat(FirstName," ",LastName) as "Actor/Actress", count(Id) as "Movies Count", from Actors innner join Movies using(Id);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'from Actors innner join Movies using(Id)' at line 1
+mysql> create view Actor_have_movies as select concat(FirstName," ",LastName) as "Actor/Actress", count(Id) as "Movies Count" from Actors innner join Movies using(Id);
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from Actor_have_movies;
+ERROR 1140 (42000): In aggregated query without GROUP BY, expression #1 of SELECT list contains nonaggregated column 'MovieIndustry.innner.FirstName'; this is incompatible with sql_mode=only_full_group_by
+mysql> create view Actor_have_movies as select concat(FirstName," ",LastName) as "Actor/Actress", count(Id) as "Movies Count" from Actors innner join Movies using(Id) group by Id;
+ERROR 1050 (42S01): Table 'Actor_have_movies' already exists
+mysql> drop table Actor_have_movies;
+ERROR 1051 (42S02): Unknown table 'MovieIndustry.Actor_have_movies'
+mysql> show tables;
++-------------------------+
+| Tables_in_MovieIndustry |
++-------------------------+
+| Actor_have_movies       |
+| Actors                  |
+| MovieView               |
+| Movies                  |
++-------------------------+
+4 rows in set (0.00 sec)
+
+mysql> drop table Actor_have_movies;
+ERROR 1051 (42S02): Unknown table 'MovieIndustry.Actor_have_movies'
+mysql> drop view Actor_have_movies;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> show tables;
++-------------------------+
+| Tables_in_MovieIndustry |
++-------------------------+
+| Actors                  |
+| MovieView               |
+| Movies                  |
++-------------------------+
+3 rows in set (0.00 sec)
+
+mysql> create view Actor_have_movies as select concat(FirstName," ",LastName) as "Actor/Actress", count(Id) as "Movies Count" from Actors innner join Movies using(Id) group by Id;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from Actor_have_movies;
++------------------+--------------+
+| Actor/Actress    | Movies Count |
++------------------+--------------+
+| Mad Titan        |            1 |
+| Ram Charan       |            1 |
+| Amitabh Bachchan |            1 |
+| Salman Khan      |            2 |
+| Shraddha Kapoor  |            1 |
+| Prabhas Raju     |            1 |
+| Rishi Kapoor     |            1 |
+| Emma Watson      |            1 |
+| Talitha Bateman  |            1 |
+| Deepika Padukon  |            1 |
+| Akshay Kumar     |            2 |
++------------------+--------------+
+11 rows in set (0.00 sec)
+
+mysql> select Concat(FirstName," ",LastName) as "Actor/Actress",max(Movie_Count) from Actor_have_movies;
+ERROR 1054 (42S22): Unknown column 'FirstName' in 'field list'
+mysql> select "Actor/Actress",max(Movie_Count) from Actor_have_movies;
+ERROR 1054 (42S22): Unknown column 'Movie_Count' in 'field list'
+mysql> select "Actor/Actress",max("Movies Count") from Actor_have_movies;
++---------------+---------------------+
+| Actor/Actress | max("Movies Count") |
++---------------+---------------------+
+| Actor/Actress | Movies Count        |
++---------------+---------------------+
+1 row in set (0.00 sec)
+
+mysql> select * from Actor_have_movies order by desc limit 5;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'desc limit 5' at line 1
+mysql> select * from Actor_have_movies order by desc;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'desc' at line 1
+mysql> select * from Actor_have_movies order in desc;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'in desc' at line 1
+mysql> select * from Actor_have_movies desc;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'desc' at line 1
+mysql> select * from Actor_have_movies order by "Movie Count" desc limit 5;
++------------------+--------------+
+| Actor/Actress    | Movies Count |
++------------------+--------------+
+| Mad Titan        |            1 |
+| Ram Charan       |            1 |
+| Amitabh Bachchan |            1 |
+| Salman Khan      |            2 |
+| Shraddha Kapoor  |            1 |
++------------------+--------------+
+5 rows in set (0.00 sec)
+
+mysql> select * from Actor_have_movies order by "Movie Count" desc;
++------------------+--------------+
+| Actor/Actress    | Movies Count |
++------------------+--------------+
+| Mad Titan        |            1 |
+| Ram Charan       |            1 |
+| Amitabh Bachchan |            1 |
+| Salman Khan      |            2 |
+| Shraddha Kapoor  |            1 |
+| Prabhas Raju     |            1 |
+| Rishi Kapoor     |            1 |
+| Emma Watson      |            1 |
+| Talitha Bateman  |            1 |
+| Deepika Padukon  |            1 |
+| Akshay Kumar     |            2 |
++------------------+--------------+
+11 rows in set (0.00 sec)
+
+mysql> select * from Actor_have_movies order by "Movie Count" Asc;
++------------------+--------------+
+| Actor/Actress    | Movies Count |
++------------------+--------------+
+| Mad Titan        |            1 |
+| Ram Charan       |            1 |
+| Amitabh Bachchan |            1 |
+| Salman Khan      |            2 |
+| Shraddha Kapoor  |            1 |
+| Prabhas Raju     |            1 |
+| Rishi Kapoor     |            1 |
+| Emma Watson      |            1 |
+| Talitha Bateman  |            1 |
+| Deepika Padukon  |            1 |
+| Akshay Kumar     |            2 |
++------------------+--------------+
+11 rows in set (0.00 sec)
+
+mysql> select * from Actor_have_movies order by "Movie Count" Desc;
++------------------+--------------+
+| Actor/Actress    | Movies Count |
++------------------+--------------+
+| Mad Titan        |            1 |
+| Ram Charan       |            1 |
+| Amitabh Bachchan |            1 |
+| Salman Khan      |            2 |
+| Shraddha Kapoor  |            1 |
+| Prabhas Raju     |            1 |
+| Rishi Kapoor     |            1 |
+| Emma Watson      |            1 |
+| Talitha Bateman  |            1 |
+| Deepika Padukon  |            1 |
+| Akshay Kumar     |            2 |
++------------------+--------------+
+11 rows in set (0.00 sec)
+
+mysql> select * from Actor_have_movies  where "Movie Count"=(select max("Movies Count") from Actor_have_movies) ;
+Empty set (0.01 sec)
+
+mysql> select max("Movies Count") from Actor_have_movies ;
++---------------------+
+| max("Movies Count") |
++---------------------+
+| Movies Count        |
++---------------------+
+1 row in set (0.00 sec)
+
+mysql> select max("Movies Count") from Actor_have_movies ;
++---------------------+
+| max("Movies Count") |
++---------------------+
+| Movies Count        |
++---------------------+
+1 row in set (0.01 sec)
+
+mysql> create view RichFemaleActors select * from Actors where Gender="Female";
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'select * from Actors where Gender="Female"' at line 1
+mysql> show tables;
++-------------------------+
+| Tables_in_MovieIndustry |
++-------------------------+
+| Actor_have_movies       |
+| Actors                  |
+| MovieView               |
+| Movies                  |
++-------------------------+
+4 rows in set (0.00 sec)
+
+mysql> drop table Actor_have_movies,MovieView;
+ERROR 1051 (42S02): Unknown table 'MovieIndustry.Actor_have_movies,MovieIndustry.MovieView'
+mysql> drop view Actor_have_movies,MovieView;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> show tables;
++-------------------------+
+| Tables_in_MovieIndustry |
++-------------------------+
+| Actors                  |
+| Movies                  |
++-------------------------+
+2 rows in set (0.00 sec)
+
+mysql> select * from Actors;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |
+|  2 | Mad       | Titan    | 1968-02-12 | Male   | Married       |                 45 |
+|  3 | Salman    | Khan     | 1965-12-27 | Male   | Single        |                350 |
+|  4 | Akshay    | Kumar    | 1967-09-09 | Male   | Married       |                325 |
+|  5 | Emma      | Watson   | 1990-04-15 | Female | Single        |                 90 |
+|  6 | Talitha   | Bateman  | 2001-09-04 | Male   | Single        |                  4 |
+|  7 | Ram       | Charan   | 1985-03-27 | Male   | Married       |                180 |
+|  8 | Rishi     | Kapoor   | 1952-09-04 | Male   | Married       |                 40 |
+|  9 | Shraddha  | Kapoor   | 1990-04-15 | Female | Single        |                 10 |
+| 10 | Amitabh   | Bachchan | 1942-10-11 | Male   | Married       |                410 |
+| 11 | Deepika   | Padukon  | 1986-01-05 | Female | Single        |                 35 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+11 rows in set (0.00 sec)
+
+mysql> select * from Moviess;
+ERROR 1146 (42S02): Table 'MovieIndustry.Moviess' doesn't exist
+mysql> select * from Movies;
++-------------------+--------------+----------------+----------------------------------+--------------+------+
+| Movie_Name        | Movie_Genera | Movie_Language | WorldWide_Collection_In_Millions | Release_Year | Id   |
++-------------------+--------------+----------------+----------------------------------+--------------+------+
+| Avenger:EndGame   | Sci-Fi       | English        |                            18000 | 2016-06-05   |    2 |
+| RRR               | Action       | Telugu         |                            15000 | 2019-12-12   |    7 |
+| Sholay            | Thriller     | Hindi          |                             2000 | 1979-08-12   |   10 |
+| Bajrangi Bhaijaan | Adventure    | Hindi          |                             1200 | 2020-11-16   |    3 |
+| Aashiqui 2        | Romantic     | Hindi          |                              800 | 2014-06-10   |    9 |
+| BaahuBali         | Action       | Telugu         |                            12000 | 2019-04-06   |    1 |
+| Prem Granth       | Romantic     | Hindi          |                              300 | 1996-10-15   |    8 |
+| Harry Potter      | Adventure    | English        |                             7700 | 2011-07-15   |    5 |
+| Annabelle         | Horror       | English        |                              300 | 2017-10-18   |    6 |
+| Padmavat          | Action       | Hindi          |                              400 | 2018-01-25   |   11 |
+| Good Newws        | Adventure    | Hindi          |                              350 | 2019-12-27   |    4 |
+| Sultan            | Thriller     | Hindi          |                             6500 | 2016-12-23   |    3 |
+| Mission Mangal    | Thriller     | Hindi          |                              200 | 2019-08-15   |    4 |
++-------------------+--------------+----------------+----------------------------------+--------------+------+
+13 rows in set (0.00 sec)
+
+mysql> select * from Actors;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |
+|  2 | Mad       | Titan    | 1968-02-12 | Male   | Married       |                 45 |
+|  3 | Salman    | Khan     | 1965-12-27 | Male   | Single        |                350 |
+|  4 | Akshay    | Kumar    | 1967-09-09 | Male   | Married       |                325 |
+|  5 | Emma      | Watson   | 1990-04-15 | Female | Single        |                 90 |
+|  6 | Talitha   | Bateman  | 2001-09-04 | Male   | Single        |                  4 |
+|  7 | Ram       | Charan   | 1985-03-27 | Male   | Married       |                180 |
+|  8 | Rishi     | Kapoor   | 1952-09-04 | Male   | Married       |                 40 |
+|  9 | Shraddha  | Kapoor   | 1990-04-15 | Female | Single        |                 10 |
+| 10 | Amitabh   | Bachchan | 1942-10-11 | Male   | Married       |                410 |
+| 11 | Deepika   | Padukon  | 1986-01-05 | Female | Single        |                 35 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+11 rows in set (0.00 sec)
+
+mysql> create view MovieIndustry select Id,concat(FirstName," ",LastName) as "Actor/Actress", Movie_Name,WorldWide_Collection,Release_Year from Actors join Movies using(Id);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'select Id,concat(FirstName," ",LastName) as "Actor/Actress", Movie_Name,WorldWid' at line 1
+mysql> create view MovieIndustry as select Id, concat(FirstName," ",LastName) as "Actor/Actress", Movie_Name, WorldWide_Collection, Release_Year from Actors join Movies using(Id);
+ERROR 1054 (42S22): Unknown column 'WorldWide_Collection' in 'field list'
+mysql> create view MovieIndustry as select Id, concat(FirstName," ",LastName) as "Actor/Actress", Movie_Name, WorldWide_Collection_In_Millions, Release_Year from Actors join Movies using(Id);
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from MovieIndustry;
++----+------------------+-------------------+----------------------------------+--------------+
+| Id | Actor/Actress    | Movie_Name        | WorldWide_Collection_In_Millions | Release_Year |
++----+------------------+-------------------+----------------------------------+--------------+
+|  2 | Mad Titan        | Avenger:EndGame   |                            18000 | 2016-06-05   |
+|  7 | Ram Charan       | RRR               |                            15000 | 2019-12-12   |
+| 10 | Amitabh Bachchan | Sholay            |                             2000 | 1979-08-12   |
+|  3 | Salman Khan      | Bajrangi Bhaijaan |                             1200 | 2020-11-16   |
+|  9 | Shraddha Kapoor  | Aashiqui 2        |                              800 | 2014-06-10   |
+|  1 | Prabhas Raju     | BaahuBali         |                            12000 | 2019-04-06   |
+|  8 | Rishi Kapoor     | Prem Granth       |                              300 | 1996-10-15   |
+|  5 | Emma Watson      | Harry Potter      |                             7700 | 2011-07-15   |
+|  6 | Talitha Bateman  | Annabelle         |                              300 | 2017-10-18   |
+| 11 | Deepika Padukon  | Padmavat          |                              400 | 2018-01-25   |
+|  4 | Akshay Kumar     | Good Newws        |                              350 | 2019-12-27   |
+|  3 | Salman Khan      | Sultan            |                             6500 | 2016-12-23   |
+|  4 | Akshay Kumar     | Mission Mangal    |                              200 | 2019-08-15   |
++----+------------------+-------------------+----------------------------------+--------------+
+13 rows in set (0.00 sec)
+
+mysql> drop view MovieIndustry;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create view MovieIndustry as select Id, concat(FirstName," ",LastName) as "Actor/Actress", Movie_Name as "Movie Name", WorldWide_Collection_In_Millions as "Collection", Release_Year as "Release Date" from
+ Actors join Movies using(Id);
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> drop view MovieIndustry;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create view MovieIndustry as select Id, concat(FirstName," ",LastName) as "Actor/Actress", Movie_Name as "Movie Name", WorldWide_Collection_In_Millions as "Collection", Release_Year as "Release Date" from Actors join Movies using(Id);
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from MovieIndustry;
++----+------------------+-------------------+------------+--------------+
+| Id | Actor/Actress    | Movie Name        | Collection | Release Date |
++----+------------------+-------------------+------------+--------------+
+|  2 | Mad Titan        | Avenger:EndGame   |      18000 | 2016-06-05   |
+|  7 | Ram Charan       | RRR               |      15000 | 2019-12-12   |
+| 10 | Amitabh Bachchan | Sholay            |       2000 | 1979-08-12   |
+|  3 | Salman Khan      | Bajrangi Bhaijaan |       1200 | 2020-11-16   |
+|  9 | Shraddha Kapoor  | Aashiqui 2        |        800 | 2014-06-10   |
+|  1 | Prabhas Raju     | BaahuBali         |      12000 | 2019-04-06   |
+|  8 | Rishi Kapoor     | Prem Granth       |        300 | 1996-10-15   |
+|  5 | Emma Watson      | Harry Potter      |       7700 | 2011-07-15   |
+|  6 | Talitha Bateman  | Annabelle         |        300 | 2017-10-18   |
+| 11 | Deepika Padukon  | Padmavat          |        400 | 2018-01-25   |
+|  4 | Akshay Kumar     | Good Newws        |        350 | 2019-12-27   |
+|  3 | Salman Khan      | Sultan            |       6500 | 2016-12-23   |
+|  4 | Akshay Kumar     | Mission Mangal    |        200 | 2019-08-15   |
++----+------------------+-------------------+------------+--------------+
+13 rows in set (0.00 sec)
+
+mysql> select * from MovieIndustry order by "Release Date" desc;
++----+------------------+-------------------+------------+--------------+
+| Id | Actor/Actress    | Movie Name        | Collection | Release Date |
++----+------------------+-------------------+------------+--------------+
+|  2 | Mad Titan        | Avenger:EndGame   |      18000 | 2016-06-05   |
+|  7 | Ram Charan       | RRR               |      15000 | 2019-12-12   |
+| 10 | Amitabh Bachchan | Sholay            |       2000 | 1979-08-12   |
+|  3 | Salman Khan      | Bajrangi Bhaijaan |       1200 | 2020-11-16   |
+|  9 | Shraddha Kapoor  | Aashiqui 2        |        800 | 2014-06-10   |
+|  1 | Prabhas Raju     | BaahuBali         |      12000 | 2019-04-06   |
+|  8 | Rishi Kapoor     | Prem Granth       |        300 | 1996-10-15   |
+|  5 | Emma Watson      | Harry Potter      |       7700 | 2011-07-15   |
+|  6 | Talitha Bateman  | Annabelle         |        300 | 2017-10-18   |
+| 11 | Deepika Padukon  | Padmavat          |        400 | 2018-01-25   |
+|  4 | Akshay Kumar     | Good Newws        |        350 | 2019-12-27   |
+|  3 | Salman Khan      | Sultan            |       6500 | 2016-12-23   |
+|  4 | Akshay Kumar     | Mission Mangal    |        200 | 2019-08-15   |
++----+------------------+-------------------+------------+--------------+
+13 rows in set (0.00 sec)
+
+mysql> show full tables;
++-------------------------+------------+
+| Tables_in_MovieIndustry | Table_type |
++-------------------------+------------+
+| Actors                  | BASE TABLE |
+| MovieIndustry           | VIEW       |
+| Movies                  | BASE TABLE |
++-------------------------+------------+
+3 rows in set (0.00 sec)
+
+mysql> select * from MovieIndustry order by "Release Date" desc offset 1;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'offset 1' at line 1
+mysql> select * from MovieIndustry order by "Release Date" desc OFFSET 0 ROWS  
+    ->     FETCH NEXT 10 ROWS ONLY; 
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'OFFSET 0 ROWS  
+    FETCH NEXT 10 ROWS ONLY' at line 1
+mysql> select * from MovieIndustry;
++----+------------------+-------------------+------------+--------------+
+| Id | Actor/Actress    | Movie Name        | Collection | Release Date |
++----+------------------+-------------------+------------+--------------+
+|  2 | Mad Titan        | Avenger:EndGame   |      18000 | 2016-06-05   |
+|  7 | Ram Charan       | RRR               |      15000 | 2019-12-12   |
+| 10 | Amitabh Bachchan | Sholay            |       2000 | 1979-08-12   |
+|  3 | Salman Khan      | Bajrangi Bhaijaan |       1200 | 2020-11-16   |
+|  9 | Shraddha Kapoor  | Aashiqui 2        |        800 | 2014-06-10   |
+|  1 | Prabhas Raju     | BaahuBali         |      12000 | 2019-04-06   |
+|  8 | Rishi Kapoor     | Prem Granth       |        300 | 1996-10-15   |
+|  5 | Emma Watson      | Harry Potter      |       7700 | 2011-07-15   |
+|  6 | Talitha Bateman  | Annabelle         |        300 | 2017-10-18   |
+| 11 | Deepika Padukon  | Padmavat          |        400 | 2018-01-25   |
+|  4 | Akshay Kumar     | Good Newws        |        350 | 2019-12-27   |
+|  3 | Salman Khan      | Sultan            |       6500 | 2016-12-23   |
+|  4 | Akshay Kumar     | Mission Mangal    |        200 | 2019-08-15   |
++----+------------------+-------------------+------------+--------------+
+13 rows in set (0.00 sec)
+
+mysql> update MovieIndustry set Collection=2000 where "Movie Name"="Mission Mangal";
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 0  Changed: 0  Warnings: 0
+
+mysql> select * from MovieIndustry;
++----+------------------+-------------------+------------+--------------+
+| Id | Actor/Actress    | Movie Name        | Collection | Release Date |
++----+------------------+-------------------+------------+--------------+
+|  2 | Mad Titan        | Avenger:EndGame   |      18000 | 2016-06-05   |
+|  7 | Ram Charan       | RRR               |      15000 | 2019-12-12   |
+| 10 | Amitabh Bachchan | Sholay            |       2000 | 1979-08-12   |
+|  3 | Salman Khan      | Bajrangi Bhaijaan |       1200 | 2020-11-16   |
+|  9 | Shraddha Kapoor  | Aashiqui 2        |        800 | 2014-06-10   |
+|  1 | Prabhas Raju     | BaahuBali         |      12000 | 2019-04-06   |
+|  8 | Rishi Kapoor     | Prem Granth       |        300 | 1996-10-15   |
+|  5 | Emma Watson      | Harry Potter      |       7700 | 2011-07-15   |
+|  6 | Talitha Bateman  | Annabelle         |        300 | 2017-10-18   |
+| 11 | Deepika Padukon  | Padmavat          |        400 | 2018-01-25   |
+|  4 | Akshay Kumar     | Good Newws        |        350 | 2019-12-27   |
+|  3 | Salman Khan      | Sultan            |       6500 | 2016-12-23   |
+|  4 | Akshay Kumar     | Mission Mangal    |        200 | 2019-08-15   |
++----+------------------+-------------------+------------+--------------+
+13 rows in set (0.00 sec)
+
+mysql> select * from Movies;
++-------------------+--------------+----------------+----------------------------------+--------------+------+
+| Movie_Name        | Movie_Genera | Movie_Language | WorldWide_Collection_In_Millions | Release_Year | Id   |
++-------------------+--------------+----------------+----------------------------------+--------------+------+
+| Avenger:EndGame   | Sci-Fi       | English        |                            18000 | 2016-06-05   |    2 |
+| RRR               | Action       | Telugu         |                            15000 | 2019-12-12   |    7 |
+| Sholay            | Thriller     | Hindi          |                             2000 | 1979-08-12   |   10 |
+| Bajrangi Bhaijaan | Adventure    | Hindi          |                             1200 | 2020-11-16   |    3 |
+| Aashiqui 2        | Romantic     | Hindi          |                              800 | 2014-06-10   |    9 |
+| BaahuBali         | Action       | Telugu         |                            12000 | 2019-04-06   |    1 |
+| Prem Granth       | Romantic     | Hindi          |                              300 | 1996-10-15   |    8 |
+| Harry Potter      | Adventure    | English        |                             7700 | 2011-07-15   |    5 |
+| Annabelle         | Horror       | English        |                              300 | 2017-10-18   |    6 |
+| Padmavat          | Action       | Hindi          |                              400 | 2018-01-25   |   11 |
+| Good Newws        | Adventure    | Hindi          |                              350 | 2019-12-27   |    4 |
+| Sultan            | Thriller     | Hindi          |                             6500 | 2016-12-23   |    3 |
+| Mission Mangal    | Thriller     | Hindi          |                              200 | 2019-08-15   |    4 |
++-------------------+--------------+----------------+----------------------------------+--------------+------+
+13 rows in set (0.00 sec)
+
+mysql> drop view MovieIndustry;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create view MovieIndustry as select Id, concat(FirstName," ",LastName) as "Actor/Actress", Movie_Name as "Movie Name", WorldWide_Collection_In_Millions as "Collection", Release_Year as "Release Date" from Actors inner join Movies on Actors.Id=Movies.Id;
+ERROR 1052 (23000): Column 'Id' in field list is ambiguous
+mysql> create view MovieIndustry as select Actors.Id, concat(FirstName," ",LastName) as "Actor/Actress", Movie_Name as "Movie Name", WorldWide_Collection_In_Millions as "Collection", Release_Year as "Release Dat
+e" from Actors inner join Movies on Actors.Id=Movies.Id;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> select * from MovieIndustry;
++----+------------------+-------------------+------------+--------------+
+| Id | Actor/Actress    | Movie Name        | Collection | Release Date |
++----+------------------+-------------------+------------+--------------+
+|  2 | Mad Titan        | Avenger:EndGame   |      18000 | 2016-06-05   |
+|  7 | Ram Charan       | RRR               |      15000 | 2019-12-12   |
+| 10 | Amitabh Bachchan | Sholay            |       2000 | 1979-08-12   |
+|  3 | Salman Khan      | Bajrangi Bhaijaan |       1200 | 2020-11-16   |
+|  9 | Shraddha Kapoor  | Aashiqui 2        |        800 | 2014-06-10   |
+|  1 | Prabhas Raju     | BaahuBali         |      12000 | 2019-04-06   |
+|  8 | Rishi Kapoor     | Prem Granth       |        300 | 1996-10-15   |
+|  5 | Emma Watson      | Harry Potter      |       7700 | 2011-07-15   |
+|  6 | Talitha Bateman  | Annabelle         |        300 | 2017-10-18   |
+| 11 | Deepika Padukon  | Padmavat          |        400 | 2018-01-25   |
+|  4 | Akshay Kumar     | Good Newws        |        350 | 2019-12-27   |
+|  3 | Salman Khan      | Sultan            |       6500 | 2016-12-23   |
+|  4 | Akshay Kumar     | Mission Mangal    |        200 | 2019-08-15   |
++----+------------------+-------------------+------------+--------------+
+13 rows in set (0.00 sec)
+
+mysql> update MovieIndustry set Collection=2000 where "Movie Name"="Mission Mangal";
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 0  Changed: 0  Warnings: 0
+
+mysql> select * from MovieIndustry;
++----+------------------+-------------------+------------+--------------+
+| Id | Actor/Actress    | Movie Name        | Collection | Release Date |
++----+------------------+-------------------+------------+--------------+
+|  2 | Mad Titan        | Avenger:EndGame   |      18000 | 2016-06-05   |
+|  7 | Ram Charan       | RRR               |      15000 | 2019-12-12   |
+| 10 | Amitabh Bachchan | Sholay            |       2000 | 1979-08-12   |
+|  3 | Salman Khan      | Bajrangi Bhaijaan |       1200 | 2020-11-16   |
+|  9 | Shraddha Kapoor  | Aashiqui 2        |        800 | 2014-06-10   |
+|  1 | Prabhas Raju     | BaahuBali         |      12000 | 2019-04-06   |
+|  8 | Rishi Kapoor     | Prem Granth       |        300 | 1996-10-15   |
+|  5 | Emma Watson      | Harry Potter      |       7700 | 2011-07-15   |
+|  6 | Talitha Bateman  | Annabelle         |        300 | 2017-10-18   |
+| 11 | Deepika Padukon  | Padmavat          |        400 | 2018-01-25   |
+|  4 | Akshay Kumar     | Good Newws        |        350 | 2019-12-27   |
+|  3 | Salman Khan      | Sultan            |       6500 | 2016-12-23   |
+|  4 | Akshay Kumar     | Mission Mangal    |        200 | 2019-08-15   |
++----+------------------+-------------------+------------+--------------+
+13 rows in set (0.00 sec)
+
+mysql> select * from Movies;
++-------------------+--------------+----------------+----------------------------------+--------------+------+
+| Movie_Name        | Movie_Genera | Movie_Language | WorldWide_Collection_In_Millions | Release_Year | Id   |
++-------------------+--------------+----------------+----------------------------------+--------------+------+
+| Avenger:EndGame   | Sci-Fi       | English        |                            18000 | 2016-06-05   |    2 |
+| RRR               | Action       | Telugu         |                            15000 | 2019-12-12   |    7 |
+| Sholay            | Thriller     | Hindi          |                             2000 | 1979-08-12   |   10 |
+| Bajrangi Bhaijaan | Adventure    | Hindi          |                             1200 | 2020-11-16   |    3 |
+| Aashiqui 2        | Romantic     | Hindi          |                              800 | 2014-06-10   |    9 |
+| BaahuBali         | Action       | Telugu         |                            12000 | 2019-04-06   |    1 |
+| Prem Granth       | Romantic     | Hindi          |                              300 | 1996-10-15   |    8 |
+| Harry Potter      | Adventure    | English        |                             7700 | 2011-07-15   |    5 |
+| Annabelle         | Horror       | English        |                              300 | 2017-10-18   |    6 |
+| Padmavat          | Action       | Hindi          |                              400 | 2018-01-25   |   11 |
+| Good Newws        | Adventure    | Hindi          |                              350 | 2019-12-27   |    4 |
+| Sultan            | Thriller     | Hindi          |                             6500 | 2016-12-23   |    3 |
+| Mission Mangal    | Thriller     | Hindi          |                              200 | 2019-08-15   |    4 |
++-------------------+--------------+----------------+----------------------------------+--------------+------+
+13 rows in set (0.00 sec)
+
+mysql> drop view MovieIndustry;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> create view MovieView select Id,Movie_Name,WorldWide_Collection_In_Millions as Collection from Movies;;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'select Id,Movie_Name,WorldWide_Collection_In_Millions as Collection from Movies' at line 1
+ERROR: 
+No query specified
+
+mysql> create view MovieView as select Id,Movie_Name,WorldWide_Collection_In_Millions as Collection from Movies;;
+Query OK, 0 rows affected (0.01 sec)
+
+ERROR: 
+No query specified
+
+mysql> select * from MovieView;
++------+-------------------+------------+
+| Id   | Movie_Name        | Collection |
++------+-------------------+------------+
+|    2 | Avenger:EndGame   |      18000 |
+|    7 | RRR               |      15000 |
+|   10 | Sholay            |       2000 |
+|    3 | Bajrangi Bhaijaan |       1200 |
+|    9 | Aashiqui 2        |        800 |
+|    1 | BaahuBali         |      12000 |
+|    8 | Prem Granth       |        300 |
+|    5 | Harry Potter      |       7700 |
+|    6 | Annabelle         |        300 |
+|   11 | Padmavat          |        400 |
+|    4 | Good Newws        |        350 |
+|    3 | Sultan            |       6500 |
+|    4 | Mission Mangal    |        200 |
++------+-------------------+------------+
+13 rows in set (0.00 sec)
+
+mysql> update MovieView set Collection=3000 where Movie_Name="Mission Mangal";
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from MovieView;
++------+-------------------+------------+
+| Id   | Movie_Name        | Collection |
++------+-------------------+------------+
+|    2 | Avenger:EndGame   |      18000 |
+|    7 | RRR               |      15000 |
+|   10 | Sholay            |       2000 |
+|    3 | Bajrangi Bhaijaan |       1200 |
+|    9 | Aashiqui 2        |        800 |
+|    1 | BaahuBali         |      12000 |
+|    8 | Prem Granth       |        300 |
+|    5 | Harry Potter      |       7700 |
+|    6 | Annabelle         |        300 |
+|   11 | Padmavat          |        400 |
+|    4 | Good Newws        |        350 |
+|    3 | Sultan            |       6500 |
+|    4 | Mission Mangal    |       3000 |
++------+-------------------+------------+
+13 rows in set (0.00 sec)
+
+mysql> select * from Movies;
++-------------------+--------------+----------------+----------------------------------+--------------+------+
+| Movie_Name        | Movie_Genera | Movie_Language | WorldWide_Collection_In_Millions | Release_Year | Id   |
++-------------------+--------------+----------------+----------------------------------+--------------+------+
+| Avenger:EndGame   | Sci-Fi       | English        |                            18000 | 2016-06-05   |    2 |
+| RRR               | Action       | Telugu         |                            15000 | 2019-12-12   |    7 |
+| Sholay            | Thriller     | Hindi          |                             2000 | 1979-08-12   |   10 |
+| Bajrangi Bhaijaan | Adventure    | Hindi          |                             1200 | 2020-11-16   |    3 |
+| Aashiqui 2        | Romantic     | Hindi          |                              800 | 2014-06-10   |    9 |
+| BaahuBali         | Action       | Telugu         |                            12000 | 2019-04-06   |    1 |
+| Prem Granth       | Romantic     | Hindi          |                              300 | 1996-10-15   |    8 |
+| Harry Potter      | Adventure    | English        |                             7700 | 2011-07-15   |    5 |
+| Annabelle         | Horror       | English        |                              300 | 2017-10-18   |    6 |
+| Padmavat          | Action       | Hindi          |                              400 | 2018-01-25   |   11 |
+| Good Newws        | Adventure    | Hindi          |                              350 | 2019-12-27   |    4 |
+| Sultan            | Thriller     | Hindi          |                             6500 | 2016-12-23   |    3 |
+| Mission Mangal    | Thriller     | Hindi          |                             3000 | 2019-08-15   |    4 |
++-------------------+--------------+----------------+----------------------------------+--------------+------+
+13 rows in set (0.00 sec)
+
+mysql> insert into MovieView values(12,"Abc",2222);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> select * from MovieView;
++------+-------------------+------------+
+| Id   | Movie_Name        | Collection |
++------+-------------------+------------+
+|    2 | Avenger:EndGame   |      18000 |
+|    7 | RRR               |      15000 |
+|   10 | Sholay            |       2000 |
+|    3 | Bajrangi Bhaijaan |       1200 |
+|    9 | Aashiqui 2        |        800 |
+|    1 | BaahuBali         |      12000 |
+|    8 | Prem Granth       |        300 |
+|    5 | Harry Potter      |       7700 |
+|    6 | Annabelle         |        300 |
+|   11 | Padmavat          |        400 |
+|    4 | Good Newws        |        350 |
+|    3 | Sultan            |       6500 |
+|    4 | Mission Mangal    |       3000 |
+|   12 | Abc               |       2222 |
++------+-------------------+------------+
+14 rows in set (0.00 sec)
+
+mysql> select * from Movies;
++-------------------+--------------+----------------+----------------------------------+--------------+------+
+| Movie_Name        | Movie_Genera | Movie_Language | WorldWide_Collection_In_Millions | Release_Year | Id   |
++-------------------+--------------+----------------+----------------------------------+--------------+------+
+| Avenger:EndGame   | Sci-Fi       | English        |                            18000 | 2016-06-05   |    2 |
+| RRR               | Action       | Telugu         |                            15000 | 2019-12-12   |    7 |
+| Sholay            | Thriller     | Hindi          |                             2000 | 1979-08-12   |   10 |
+| Bajrangi Bhaijaan | Adventure    | Hindi          |                             1200 | 2020-11-16   |    3 |
+| Aashiqui 2        | Romantic     | Hindi          |                              800 | 2014-06-10   |    9 |
+| BaahuBali         | Action       | Telugu         |                            12000 | 2019-04-06   |    1 |
+| Prem Granth       | Romantic     | Hindi          |                              300 | 1996-10-15   |    8 |
+| Harry Potter      | Adventure    | English        |                             7700 | 2011-07-15   |    5 |
+| Annabelle         | Horror       | English        |                              300 | 2017-10-18   |    6 |
+| Padmavat          | Action       | Hindi          |                              400 | 2018-01-25   |   11 |
+| Good Newws        | Adventure    | Hindi          |                              350 | 2019-12-27   |    4 |
+| Sultan            | Thriller     | Hindi          |                             6500 | 2016-12-23   |    3 |
+| Mission Mangal    | Thriller     | Hindi          |                             3000 | 2019-08-15   |    4 |
+| Abc               | NULL         | NULL           |                             2222 | NULL         |   12 |
++-------------------+--------------+----------------+----------------------------------+--------------+------+
+14 rows in set (0.00 sec)
+
+mysql> delete from movieView where Id=12;
+ERROR 1146 (42S02): Table 'MovieIndustry.movieView' doesn't exist
+mysql> delete from MovieView where Id=12;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from MovieView;
++------+-------------------+------------+
+| Id   | Movie_Name        | Collection |
++------+-------------------+------------+
+|    2 | Avenger:EndGame   |      18000 |
+|    7 | RRR               |      15000 |
+|   10 | Sholay            |       2000 |
+|    3 | Bajrangi Bhaijaan |       1200 |
+|    9 | Aashiqui 2        |        800 |
+|    1 | BaahuBali         |      12000 |
+|    8 | Prem Granth       |        300 |
+|    5 | Harry Potter      |       7700 |
+|    6 | Annabelle         |        300 |
+|   11 | Padmavat          |        400 |
+|    4 | Good Newws        |        350 |
+|    3 | Sultan            |       6500 |
+|    4 | Mission Mangal    |       3000 |
++------+-------------------+------------+
+13 rows in set (0.00 sec)
+
+mysql> select * from MovieView;
++------+-------------------+------------+
+| Id   | Movie_Name        | Collection |
++------+-------------------+------------+
+|    2 | Avenger:EndGame   |      18000 |
+|    7 | RRR               |      15000 |
+|   10 | Sholay            |       2000 |
+|    3 | Bajrangi Bhaijaan |       1200 |
+|    9 | Aashiqui 2        |        800 |
+|    1 | BaahuBali         |      12000 |
+|    8 | Prem Granth       |        300 |
+|    5 | Harry Potter      |       7700 |
+|    6 | Annabelle         |        300 |
+|   11 | Padmavat          |        400 |
+|    4 | Good Newws        |        350 |
+|    3 | Sultan            |       6500 |
+|    4 | Mission Mangal    |       3000 |
++------+-------------------+------------+
+13 rows in set (0.00 sec)
+
+mysql> select * from Movies;
++-------------------+--------------+----------------+----------------------------------+--------------+------+
+| Movie_Name        | Movie_Genera | Movie_Language | WorldWide_Collection_In_Millions | Release_Year | Id   |
++-------------------+--------------+----------------+----------------------------------+--------------+------+
+| Avenger:EndGame   | Sci-Fi       | English        |                            18000 | 2016-06-05   |    2 |
+| RRR               | Action       | Telugu         |                            15000 | 2019-12-12   |    7 |
+| Sholay            | Thriller     | Hindi          |                             2000 | 1979-08-12   |   10 |
+| Bajrangi Bhaijaan | Adventure    | Hindi          |                             1200 | 2020-11-16   |    3 |
+| Aashiqui 2        | Romantic     | Hindi          |                              800 | 2014-06-10   |    9 |
+| BaahuBali         | Action       | Telugu         |                            12000 | 2019-04-06   |    1 |
+| Prem Granth       | Romantic     | Hindi          |                              300 | 1996-10-15   |    8 |
+| Harry Potter      | Adventure    | English        |                             7700 | 2011-07-15   |    5 |
+| Annabelle         | Horror       | English        |                              300 | 2017-10-18   |    6 |
+| Padmavat          | Action       | Hindi          |                              400 | 2018-01-25   |   11 |
+| Good Newws        | Adventure    | Hindi          |                              350 | 2019-12-27   |    4 |
+| Sultan            | Thriller     | Hindi          |                             6500 | 2016-12-23   |    3 |
+| Mission Mangal    | Thriller     | Hindi          |                             3000 | 2019-08-15   |    4 |
++-------------------+--------------+----------------+----------------------------------+--------------+------+
+13 rows in set (0.00 sec)
+
+mysql> create or replace view ActorView as select concat(FirstName," ",LastName) as Name,DoB,NetWorthInMillions as "NetWorth" from Actors Where MaritalStatus="Single" with check option;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from ActorView;
++-----------------+------------+----------+
+| Name            | DoB        | NetWorth |
++-----------------+------------+----------+
+| Salman Khan     | 1965-12-27 |      350 |
+| Emma Watson     | 1990-04-15 |       90 |
+| Talitha Bateman | 2001-09-04 |        4 |
+| Shraddha Kapoor | 1990-04-15 |       10 |
+| Deepika Padukon | 1986-01-05 |       35 |
++-----------------+------------+----------+
+5 rows in set (0.00 sec)
+
+mysql> insert into ActorView values ("Shahrukh Khan","1962-12-07",300);
+ERROR 1348 (HY000): Column 'Name' is not updatable
+mysql> insert into ActorView values(DoB,NetWorth) ("1962-12-07",300);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '("1962-12-07",300)' at line 1
+mysql> select * from ActorView order by NetWorth Desc;
++-----------------+------------+----------+
+| Name            | DoB        | NetWorth |
++-----------------+------------+----------+
+| Salman Khan     | 1965-12-27 |      350 |
+| Emma Watson     | 1990-04-15 |       90 |
+| Deepika Padukon | 1986-01-05 |       35 |
+| Shraddha Kapoor | 1990-04-15 |       10 |
+| Talitha Bateman | 2001-09-04 |        4 |
++-----------------+------------+----------+
+5 rows in set (0.01 sec)
+
+mysql> create or replace view ActorView as select FirstName,,LastName,DoB,NetWorthInMillions as "NetWorth" from Actors Where MaritalStatus="Single" with check option;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ',LastName,DoB,NetWorthInMillions as "NetWorth" from Actors Where MaritalStatus="' at line 1
+mysql> drop view ActorView;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> create or replace view ActorView as select FirstName,,LastName,DoB,NetWorthInMillions as "NetWorth" from Actors Where MaritalStatus="Single" with check option;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ',LastName,DoB,NetWorthInMillions as "NetWorth" from Actors Where MaritalStatus="' at line 1
+mysql> create or replace view ActorView as select FirstName,LastName,DoB,NetWorthInMillions as "NetWorth" from Actors Where MaritalStatus="Single" with check option;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from ActorView order by NetWorth Desc;
++-----------+----------+------------+----------+
+| FirstName | LastName | DoB        | NetWorth |
++-----------+----------+------------+----------+
+| Salman    | Khan     | 1965-12-27 |      350 |
+| Emma      | Watson   | 1990-04-15 |       90 |
+| Deepika   | Padukon  | 1986-01-05 |       35 |
+| Shraddha  | Kapoor   | 1990-04-15 |       10 |
+| Talitha   | Bateman  | 2001-09-04 |        4 |
++-----------+----------+------------+----------+
+5 rows in set (0.02 sec)
+
+mysql> update ActorView set NetWorth=40 where FirstName="Talitha";
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from ActorView order by NetWorth Desc;
++-----------+----------+------------+----------+
+| FirstName | LastName | DoB        | NetWorth |
++-----------+----------+------------+----------+
+| Salman    | Khan     | 1965-12-27 |      350 |
+| Emma      | Watson   | 1990-04-15 |       90 |
+| Talitha   | Bateman  | 2001-09-04 |       40 |
+| Deepika   | Padukon  | 1986-01-05 |       35 |
+| Shraddha  | Kapoor   | 1990-04-15 |       10 |
++-----------+----------+------------+----------+
+5 rows in set (0.00 sec)
+
+mysql> select * from Actors;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |
+|  2 | Mad       | Titan    | 1968-02-12 | Male   | Married       |                 45 |
+|  3 | Salman    | Khan     | 1965-12-27 | Male   | Single        |                350 |
+|  4 | Akshay    | Kumar    | 1967-09-09 | Male   | Married       |                325 |
+|  5 | Emma      | Watson   | 1990-04-15 | Female | Single        |                 90 |
+|  6 | Talitha   | Bateman  | 2001-09-04 | Male   | Single        |                 40 |
+|  7 | Ram       | Charan   | 1985-03-27 | Male   | Married       |                180 |
+|  8 | Rishi     | Kapoor   | 1952-09-04 | Male   | Married       |                 40 |
+|  9 | Shraddha  | Kapoor   | 1990-04-15 | Female | Single        |                 10 |
+| 10 | Amitabh   | Bachchan | 1942-10-11 | Male   | Married       |                410 |
+| 11 | Deepika   | Padukon  | 1986-01-05 | Female | Single        |                 35 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+11 rows in set (0.00 sec)
+
+mysql> drop view ActorView;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create or replace view ActorView as select FirstName,LastName,MaritalStatus,NetWorthInMillions as "NetWorth" from Actors Where MaritalStatus="Single" with check option;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> select * from ActorView;
++-----------+----------+---------------+----------+
+| FirstName | LastName | MaritalStatus | NetWorth |
++-----------+----------+---------------+----------+
+| Salman    | Khan     | Single        |      350 |
+| Emma      | Watson   | Single        |       90 |
+| Talitha   | Bateman  | Single        |       40 |
+| Shraddha  | Kapoor   | Single        |       10 |
+| Deepika   | Padukon  | Single        |       35 |
++-----------+----------+---------------+----------+
+5 rows in set (0.00 sec)
+
+mysql> insert into ActorView values("Shahrukh","Khan","Married",300);
+ERROR 1423 (HY000): Field of view 'MovieIndustry.ActorView' underlying table doesn't have a default value
+mysql> drop view ActorView;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create or replace view ActorView as select FirstName,LastName,MaritalStatus,NetWorthInMillions as "NetWorth" from Actors Where MaritalStatus="Single";
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> select * from ActorView;
++-----------+----------+---------------+----------+
+| FirstName | LastName | MaritalStatus | NetWorth |
++-----------+----------+---------------+----------+
+| Salman    | Khan     | Single        |      350 |
+| Emma      | Watson   | Single        |       90 |
+| Talitha   | Bateman  | Single        |       40 |
+| Shraddha  | Kapoor   | Single        |       10 |
+| Deepika   | Padukon  | Single        |       35 |
++-----------+----------+---------------+----------+
+5 rows in set (0.00 sec)
+
+mysql> insert into ActorView values("Shahrukh","Khan","Married",300);
+ERROR 1423 (HY000): Field of view 'MovieIndustry.ActorView' underlying table doesn't have a default value
+mysql> drop view ActorView;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> create or replace view ActorView as select FirstName,LastName,MaritalStatus,NetWorthInMillions as "NetWorth" from Actors Where MaritalStatus="Single";
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> select * from ActorView;
++-----------+----------+---------------+----------+
+| FirstName | LastName | MaritalStatus | NetWorth |
++-----------+----------+---------------+----------+
+| Salman    | Khan     | Single        |      350 |
+| Emma      | Watson   | Single        |       90 |
+| Talitha   | Bateman  | Single        |       40 |
+| Shraddha  | Kapoor   | Single        |       10 |
+| Deepika   | Padukon  | Single        |       35 |
++-----------+----------+---------------+----------+
+5 rows in set (0.00 sec)
+
+mysql> insert into ActorView values("Shahrukh","Khan","Married",300);
+ERROR 1423 (HY000): Field of view 'MovieIndustry.ActorView' underlying table doesn't have a default value
+mysql> desc ActorView;
++---------------+-----------------------------------------------+------+-----+---------+-------+
+| Field         | Type                                          | Null | Key | Default | Extra |
++---------------+-----------------------------------------------+------+-----+---------+-------+
+| FirstName     | varchar(30)                                   | YES  |     | NULL    |       |
+| LastName      | varchar(20)                                   | YES  |     | NULL    |       |
+| MaritalStatus | enum('Married','Divorced','Single','Unknown') | YES  |     | NULL    |       |
+| NetWorth      | decimal(10,0)                                 | NO   |     | NULL    |       |
++---------------+-----------------------------------------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+mysql> alter view change cloumn NetWorth NM int;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'change cloumn NetWorth NM int' at line 1
+mysql> desc ActorView;
++---------------+-----------------------------------------------+------+-----+---------+-------+
+| Field         | Type                                          | Null | Key | Default | Extra |
++---------------+-----------------------------------------------+------+-----+---------+-------+
+| FirstName     | varchar(30)                                   | YES  |     | NULL    |       |
+| LastName      | varchar(20)                                   | YES  |     | NULL    |       |
+| MaritalStatus | enum('Married','Divorced','Single','Unknown') | YES  |     | NULL    |       |
+| NetWorth      | decimal(10,0)                                 | NO   |     | NULL    |       |
++---------------+-----------------------------------------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+mysql> alter view change cloumn NetWorth NM INT NOT NULL DEFAULT 10;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'change cloumn NetWorth NM INT NOT NULL DEFAULT 10' at line 1
+mysql> insert into ActorView values("Shahrukh","Khan","Single",300);
+ERROR 1423 (HY000): Field of view 'MovieIndustry.ActorView' underlying table doesn't have a default value
+mysql> Field of view 'MovieIndustry.ActorView' underlying table doesn't have a default value
+    '> ;
+    '> 
+    '> ;;;
+    '> ;;;
+    '> q
+    '> ^C
+mysql> 
+mysql> show tables;
++-------------------------+
+| Tables_in_MovieIndustry |
++-------------------------+
+| ActorView               |
+| Actors                  |
+| MovieView               |
+| Movies                  |
++-------------------------+
+4 rows in set (0.00 sec)
+
+mysql> show full tables;
++-------------------------+------------+
+| Tables_in_MovieIndustry | Table_type |
++-------------------------+------------+
+| ActorView               | VIEW       |
+| Actors                  | BASE TABLE |
+| MovieView               | VIEW       |
+| Movies                  | BASE TABLE |
++-------------------------+------------+
+4 rows in set (0.00 sec)
+
+mysql> drop view ActorsView;
+ERROR 1051 (42S02): Unknown table 'MovieIndustry.ActorsView'
+mysql> drop view ActorView;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> show full tables;
++-------------------------+------------+
+| Tables_in_MovieIndustry | Table_type |
++-------------------------+------------+
+| Actors                  | BASE TABLE |
+| MovieView               | VIEW       |
+| Movies                  | BASE TABLE |
++-------------------------+------------+
+3 rows in set (0.00 sec)
+
+mysql> CREATE VIEW SingleActors AS 
+    -> SELECT FirstName, SecondName, DoB, Gender, MaritalStatus, NetWorthInMillions 
+    -> FROM Actors 
+    -> WHERE MaritalStatus = 'Single';
+ERROR 1054 (42S22): Unknown column 'SecondName' in 'field list'
+mysql> CREATE VIEW SingleActors AS  SELECT FirstName, LastName, DoB, Gender, MaritalStatus, NetWorthInMillions  FROM Actors  WHERE MaritalStatus = 'Single';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> show full tables;
++-------------------------+------------+
+| Tables_in_MovieIndustry | Table_type |
++-------------------------+------------+
+| Actors                  | BASE TABLE |
+| MovieView               | VIEW       |
+| Movies                  | BASE TABLE |
+| SingleActors            | VIEW       |
++-------------------------+------------+
+4 rows in set (0.00 sec)
+
+mysql> select * from SingleActors;
++-----------+----------+------------+--------+---------------+--------------------+
+| FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++-----------+----------+------------+--------+---------------+--------------------+
+| Salman    | Khan     | 1965-12-27 | Male   | Single        |                350 |
+| Emma      | Watson   | 1990-04-15 | Female | Single        |                 90 |
+| Talitha   | Bateman  | 2001-09-04 | Male   | Single        |                 40 |
+| Shraddha  | Kapoor   | 1990-04-15 | Female | Single        |                 10 |
+| Deepika   | Padukon  | 1986-01-05 | Female | Single        |                 35 |
++-----------+----------+------------+--------+---------------+--------------------+
+5 rows in set (0.01 sec)
+
+mysql> INSERT INTO SingleActors (FirstName, SecondName, DoB, Gender, MaritalStatus,  NetWorthInMillions) 
+    -> VALUES ('Tom', 'Hanks', '1956-07-09', 'Male', 'Married', 350);
+ERROR 1054 (42S22): Unknown column 'SecondName' in 'field list'
+mysql> INSERT INTO SingleActors (FirstName, LastName, DoB, Gender, MaritalStatus,  NetWorthInMillions)  VALUES ('Tom', 'Hanks', '1956-07-09', 'Male', 'Married', 350);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from SingleActors;
++-----------+----------+------------+--------+---------------+--------------------+
+| FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++-----------+----------+------------+--------+---------------+--------------------+
+| Salman    | Khan     | 1965-12-27 | Male   | Single        |                350 |
+| Emma      | Watson   | 1990-04-15 | Female | Single        |                 90 |
+| Talitha   | Bateman  | 2001-09-04 | Male   | Single        |                 40 |
+| Shraddha  | Kapoor   | 1990-04-15 | Female | Single        |                 10 |
+| Deepika   | Padukon  | 1986-01-05 | Female | Single        |                 35 |
++-----------+----------+------------+--------+---------------+--------------------+
+5 rows in set (0.00 sec)
+
+mysql> select * from Actors;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |
+|  2 | Mad       | Titan    | 1968-02-12 | Male   | Married       |                 45 |
+|  3 | Salman    | Khan     | 1965-12-27 | Male   | Single        |                350 |
+|  4 | Akshay    | Kumar    | 1967-09-09 | Male   | Married       |                325 |
+|  5 | Emma      | Watson   | 1990-04-15 | Female | Single        |                 90 |
+|  6 | Talitha   | Bateman  | 2001-09-04 | Male   | Single        |                 40 |
+|  7 | Ram       | Charan   | 1985-03-27 | Male   | Married       |                180 |
+|  8 | Rishi     | Kapoor   | 1952-09-04 | Male   | Married       |                 40 |
+|  9 | Shraddha  | Kapoor   | 1990-04-15 | Female | Single        |                 10 |
+| 10 | Amitabh   | Bachchan | 1942-10-11 | Male   | Married       |                410 |
+| 11 | Deepika   | Padukon  | 1986-01-05 | Female | Single        |                 35 |
+| 16 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+12 rows in set (0.00 sec)
+
+mysql> CREATE or REPLACE VIEW SingleActors AS  SELECT FirstName, LastName, DoB, Gender, MaritalStatus, NetWorthInMillions  FROM Actors  WHERE MaritalStatus = 'Single'with check option;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> select * from SingleActors;
++-----------+----------+------------+--------+---------------+--------------------+
+| FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++-----------+----------+------------+--------+---------------+--------------------+
+| Salman    | Khan     | 1965-12-27 | Male   | Single        |                350 |
+| Emma      | Watson   | 1990-04-15 | Female | Single        |                 90 |
+| Talitha   | Bateman  | 2001-09-04 | Male   | Single        |                 40 |
+| Shraddha  | Kapoor   | 1990-04-15 | Female | Single        |                 10 |
+| Deepika   | Padukon  | 1986-01-05 | Female | Single        |                 35 |
++-----------+----------+------------+--------+---------------+--------------------+
+5 rows in set (0.01 sec)
+
+mysql> INSERT INTO SingleActors (FirstName, LastName, DoB, Gender, MaritalStatus,  NetWorthInMillions)  VALUES ('Tom', 'Hanks', '1956-07-09', 'Male', 'Married', 350);
+ERROR 1369 (HY000): CHECK OPTION failed 'MovieIndustry.SingleActors'
+mysql> CREATE VIEW ActorsView1 AS
+    -> SELECT * 
+    -> FROM Actors 
+    -> WHERE TIMESTAMPDIFF(YEAR, DoB, CURDATE()) > 40; 
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from ActorsView1;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |
+|  2 | Mad       | Titan    | 1968-02-12 | Male   | Married       |                 45 |
+|  3 | Salman    | Khan     | 1965-12-27 | Male   | Single        |                350 |
+|  4 | Akshay    | Kumar    | 1967-09-09 | Male   | Married       |                325 |
+|  8 | Rishi     | Kapoor   | 1952-09-04 | Male   | Married       |                 40 |
+| 10 | Amitabh   | Bachchan | 1942-10-11 | Male   | Married       |                410 |
+| 16 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+7 rows in set (0.00 sec)
+
+mysql> drop view ActorsView1;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> CREATE VIEW ActorsView1 AS SELECT *, Timestampdiff(YEAR, DoB, CURDATE()) as Age  FROM Actors  WHERE TIMESTAMPDIFF(YEAR, DoB, CURDATE()) > 40;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from ActorsView1;
++----+-----------+----------+------------+--------+---------------+--------------------+------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions | Age  |
++----+-----------+----------+------------+--------+---------------+--------------------+------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |   43 |
+|  2 | Mad       | Titan    | 1968-02-12 | Male   | Married       |                 45 |   54 |
+|  3 | Salman    | Khan     | 1965-12-27 | Male   | Single        |                350 |   56 |
+|  4 | Akshay    | Kumar    | 1967-09-09 | Male   | Married       |                325 |   55 |
+|  8 | Rishi     | Kapoor   | 1952-09-04 | Male   | Married       |                 40 |   70 |
+| 10 | Amitabh   | Bachchan | 1942-10-11 | Male   | Married       |                410 |   80 |
+| 16 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |   66 |
++----+-----------+----------+------------+--------+---------------+--------------------+------+
+7 rows in set (0.00 sec)
+
+mysql> drop view ActorsView1;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> CREATE VIEW ActorsView1 AS SELECT *, Timestampdiff(YEAR, DoB, CURDATE()) as Age  FROM Actors;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> drop view ActorsView1;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CREATE VIEW ActorsView1 AS SELECT *, Timestampdiff(YEAR, DoB, CURDATE()) as Age  FROM Actors;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from ActorsView1;
++----+-----------+----------+------------+--------+---------------+--------------------+------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions | Age  |
++----+-----------+----------+------------+--------+---------------+--------------------+------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |   43 |
+|  2 | Mad       | Titan    | 1968-02-12 | Male   | Married       |                 45 |   54 |
+|  3 | Salman    | Khan     | 1965-12-27 | Male   | Single        |                350 |   56 |
+|  4 | Akshay    | Kumar    | 1967-09-09 | Male   | Married       |                325 |   55 |
+|  5 | Emma      | Watson   | 1990-04-15 | Female | Single        |                 90 |   32 |
+|  6 | Talitha   | Bateman  | 2001-09-04 | Male   | Single        |                 40 |   21 |
+|  7 | Ram       | Charan   | 1985-03-27 | Male   | Married       |                180 |   37 |
+|  8 | Rishi     | Kapoor   | 1952-09-04 | Male   | Married       |                 40 |   70 |
+|  9 | Shraddha  | Kapoor   | 1990-04-15 | Female | Single        |                 10 |   32 |
+| 10 | Amitabh   | Bachchan | 1942-10-11 | Male   | Married       |                410 |   80 |
+| 11 | Deepika   | Padukon  | 1986-01-05 | Female | Single        |                 35 |   36 |
+| 16 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |   66 |
++----+-----------+----------+------------+--------+---------------+--------------------+------+
+12 rows in set (0.01 sec)
+
+mysql> CREATE VIEW ActorsView2 AS SELECT *, Timestampdiff(YEAR, DoB, CURDATE()) as Age  FROM ActorsView1 with cascaded check option;
+ERROR 1060 (42S21): Duplicate column name 'Age'
+mysql> CREATE VIEW ActorsView2 AS SELECT *  FROM ActorsView1 with cascaded check option;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from ActorsView2;
++----+-----------+----------+------------+--------+---------------+--------------------+------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions | Age  |
++----+-----------+----------+------------+--------+---------------+--------------------+------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |   43 |
+|  2 | Mad       | Titan    | 1968-02-12 | Male   | Married       |                 45 |   54 |
+|  3 | Salman    | Khan     | 1965-12-27 | Male   | Single        |                350 |   56 |
+|  4 | Akshay    | Kumar    | 1967-09-09 | Male   | Married       |                325 |   55 |
+|  5 | Emma      | Watson   | 1990-04-15 | Female | Single        |                 90 |   32 |
+|  6 | Talitha   | Bateman  | 2001-09-04 | Male   | Single        |                 40 |   21 |
+|  7 | Ram       | Charan   | 1985-03-27 | Male   | Married       |                180 |   37 |
+|  8 | Rishi     | Kapoor   | 1952-09-04 | Male   | Married       |                 40 |   70 |
+|  9 | Shraddha  | Kapoor   | 1990-04-15 | Female | Single        |                 10 |   32 |
+| 10 | Amitabh   | Bachchan | 1942-10-11 | Male   | Married       |                410 |   80 |
+| 11 | Deepika   | Padukon  | 1986-01-05 | Female | Single        |                 35 |   36 |
+| 16 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |   66 |
++----+-----------+----------+------------+--------+---------------+--------------------+------+
+12 rows in set (0.01 sec)
+
+mysql> INSERT INTO ActorsView2  VALUES (DEFAULT,'Tomy', 'Hanksy', '2017-01-01', 'Male', 'Single', 35);
+ERROR 1348 (HY000): Column 'Age' is not updatable
+mysql> drop view ActorsView1. ActorsView2;
+ERROR 1051 (42S02): Unknown table 'ActorsView1.ActorsView2'
+mysql> drop view ActorsView1, ActorsView2;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> show full tables;
++-------------------------+------------+
+| Tables_in_MovieIndustry | Table_type |
++-------------------------+------------+
+| Actors                  | BASE TABLE |
+| MovieView               | VIEW       |
+| Movies                  | BASE TABLE |
+| SingleActors            | VIEW       |
++-------------------------+------------+
+4 rows in set (0.01 sec)
+
+mysql> drop view MovieView, SingleActors;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> show full tables;
++-------------------------+------------+
+| Tables_in_MovieIndustry | Table_type |
++-------------------------+------------+
+| Actors                  | BASE TABLE |
+| Movies                  | BASE TABLE |
++-------------------------+------------+
+2 rows in set (0.01 sec)
+
+mysql> create view ActorView as Select * from Actors where timestampdiff(YEAR, DoB, CURDATE())>30;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from ActorView;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |
+|  2 | Mad       | Titan    | 1968-02-12 | Male   | Married       |                 45 |
+|  3 | Salman    | Khan     | 1965-12-27 | Male   | Single        |                350 |
+|  4 | Akshay    | Kumar    | 1967-09-09 | Male   | Married       |                325 |
+|  5 | Emma      | Watson   | 1990-04-15 | Female | Single        |                 90 |
+|  7 | Ram       | Charan   | 1985-03-27 | Male   | Married       |                180 |
+|  8 | Rishi     | Kapoor   | 1952-09-04 | Male   | Married       |                 40 |
+|  9 | Shraddha  | Kapoor   | 1990-04-15 | Female | Single        |                 10 |
+| 10 | Amitabh   | Bachchan | 1942-10-11 | Male   | Married       |                410 |
+| 11 | Deepika   | Padukon  | 1986-01-05 | Female | Single        |                 35 |
+| 16 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+11 rows in set (0.00 sec)
+
+mysql> INSERT INTO ActorView VALUES (DEFAULT,'Tomy', 'Hanksy', '2006-01-01', 'Male', 'Married', 350.00);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from ActorView;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |
+|  2 | Mad       | Titan    | 1968-02-12 | Male   | Married       |                 45 |
+|  3 | Salman    | Khan     | 1965-12-27 | Male   | Single        |                350 |
+|  4 | Akshay    | Kumar    | 1967-09-09 | Male   | Married       |                325 |
+|  5 | Emma      | Watson   | 1990-04-15 | Female | Single        |                 90 |
+|  7 | Ram       | Charan   | 1985-03-27 | Male   | Married       |                180 |
+|  8 | Rishi     | Kapoor   | 1952-09-04 | Male   | Married       |                 40 |
+|  9 | Shraddha  | Kapoor   | 1990-04-15 | Female | Single        |                 10 |
+| 10 | Amitabh   | Bachchan | 1942-10-11 | Male   | Married       |                410 |
+| 11 | Deepika   | Padukon  | 1986-01-05 | Female | Single        |                 35 |
+| 16 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+11 rows in set (0.00 sec)
+
+mysql> select * from Actors;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |
+|  2 | Mad       | Titan    | 1968-02-12 | Male   | Married       |                 45 |
+|  3 | Salman    | Khan     | 1965-12-27 | Male   | Single        |                350 |
+|  4 | Akshay    | Kumar    | 1967-09-09 | Male   | Married       |                325 |
+|  5 | Emma      | Watson   | 1990-04-15 | Female | Single        |                 90 |
+|  6 | Talitha   | Bateman  | 2001-09-04 | Male   | Single        |                 40 |
+|  7 | Ram       | Charan   | 1985-03-27 | Male   | Married       |                180 |
+|  8 | Rishi     | Kapoor   | 1952-09-04 | Male   | Married       |                 40 |
+|  9 | Shraddha  | Kapoor   | 1990-04-15 | Female | Single        |                 10 |
+| 10 | Amitabh   | Bachchan | 1942-10-11 | Male   | Married       |                410 |
+| 11 | Deepika   | Padukon  | 1986-01-05 | Female | Single        |                 35 |
+| 16 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
+| 17 | Tomy      | Hanksy   | 2006-01-01 | Male   | Married       |                350 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+13 rows in set (0.00 sec)
+
+mysql> create or replace view ActorView as Select * from Actors where timestampdiff(YEAR, DoB, CURDATE())>30;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create or replace view ActorView as Select * from Actors where timestampdiff(YEAR, DoB, CURDATE())>30 with check option;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> INSERT INTO ActorView VALUES (DEFAULT,'Tommy', 'Hankssy', '2006-02-01', 'Feale', 'Married', 250.00);
+ERROR 1265 (01000): Data truncated for column 'Gender' at row 1
+mysql> INSERT INTO ActorView VALUES (DEFAULT,'Tommy', 'Hankssy', '2006-02-01', 'Female', 'Married', 250.00);
+ERROR 1369 (HY000): CHECK OPTION failed 'MovieIndustry.ActorView'
+mysql> create or replace view ActorView2 as Select * from ActorView where timestampdiff(YEAR, DoB, CURDATE())<50 ;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from ActorView2;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |
+|  5 | Emma      | Watson   | 1990-04-15 | Female | Single        |                 90 |
+|  7 | Ram       | Charan   | 1985-03-27 | Male   | Married       |                180 |
+|  9 | Shraddha  | Kapoor   | 1990-04-15 | Female | Single        |                 10 |
+| 11 | Deepika   | Padukon  | 1986-01-05 | Female | Single        |                 35 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO ActorView VALUES (DEFAULT,'Tomomy', 'Hansy', '2006-02-01', 'Female', 'Married', 250.00);
+ERROR 1369 (HY000): CHECK OPTION failed 'MovieIndustry.ActorView'
+mysql> INSERT INTO ActorView VALUES (DEFAULT,'Tomomyl', 'Hansyl', '1966-02-01', 'Female', 'Married', 250.00);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> select * from ActorView2;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |
+|  5 | Emma      | Watson   | 1990-04-15 | Female | Single        |                 90 |
+|  7 | Ram       | Charan   | 1985-03-27 | Male   | Married       |                180 |
+|  9 | Shraddha  | Kapoor   | 1990-04-15 | Female | Single        |                 10 |
+| 11 | Deepika   | Padukon  | 1986-01-05 | Female | Single        |                 35 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+5 rows in set (0.00 sec)
+
+mysql> select * from ActorView1;
+ERROR 1146 (42S02): Table 'MovieIndustry.ActorView1' doesn't exist
+mysql> select * from ActorView;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |
+|  2 | Mad       | Titan    | 1968-02-12 | Male   | Married       |                 45 |
+|  3 | Salman    | Khan     | 1965-12-27 | Male   | Single        |                350 |
+|  4 | Akshay    | Kumar    | 1967-09-09 | Male   | Married       |                325 |
+|  5 | Emma      | Watson   | 1990-04-15 | Female | Single        |                 90 |
+|  7 | Ram       | Charan   | 1985-03-27 | Male   | Married       |                180 |
+|  8 | Rishi     | Kapoor   | 1952-09-04 | Male   | Married       |                 40 |
+|  9 | Shraddha  | Kapoor   | 1990-04-15 | Female | Single        |                 10 |
+| 10 | Amitabh   | Bachchan | 1942-10-11 | Male   | Married       |                410 |
+| 11 | Deepika   | Padukon  | 1986-01-05 | Female | Single        |                 35 |
+| 16 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
+| 18 | Tomomyl   | Hansyl   | 1966-02-01 | Female | Married       |                250 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+12 rows in set (0.01 sec)
+
+mysql> select * from Actor;
+ERROR 1146 (42S02): Table 'MovieIndustry.Actor' doesn't exist
+mysql> select * from Actors;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |
+|  2 | Mad       | Titan    | 1968-02-12 | Male   | Married       |                 45 |
+|  3 | Salman    | Khan     | 1965-12-27 | Male   | Single        |                350 |
+|  4 | Akshay    | Kumar    | 1967-09-09 | Male   | Married       |                325 |
+|  5 | Emma      | Watson   | 1990-04-15 | Female | Single        |                 90 |
+|  6 | Talitha   | Bateman  | 2001-09-04 | Male   | Single        |                 40 |
+|  7 | Ram       | Charan   | 1985-03-27 | Male   | Married       |                180 |
+|  8 | Rishi     | Kapoor   | 1952-09-04 | Male   | Married       |                 40 |
+|  9 | Shraddha  | Kapoor   | 1990-04-15 | Female | Single        |                 10 |
+| 10 | Amitabh   | Bachchan | 1942-10-11 | Male   | Married       |                410 |
+| 11 | Deepika   | Padukon  | 1986-01-05 | Female | Single        |                 35 |
+| 16 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
+| 17 | Tomy      | Hanksy   | 2006-01-01 | Male   | Married       |                350 |
+| 18 | Tomomyl   | Hansyl   | 1966-02-01 | Female | Married       |                250 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+14 rows in set (0.01 sec)
+
+mysql> drop view ActorView2;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create or replace view ActorView2 as Select * from ActorView where timestampdiff(YEAR, DoB, CURDATE())<50 with check option;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from ActorView2;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |
+|  5 | Emma      | Watson   | 1990-04-15 | Female | Single        |                 90 |
+|  7 | Ram       | Charan   | 1985-03-27 | Male   | Married       |                180 |
+|  9 | Shraddha  | Kapoor   | 1990-04-15 | Female | Single        |                 10 |
+| 11 | Deepika   | Padukon  | 1986-01-05 | Female | Single        |                 35 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO ActorView VALUES (DEFAULT,'Tol', 'Hayl', '1966-02-01', 'Female', 'Married', 250.00);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO ActorView2 VALUES (DEFAULT,'Tol', 'Hayl', '1966-02-01', 'Female', 'Married', 250.00);
+ERROR 1369 (HY000): CHECK OPTION failed 'MovieIndustry.ActorView2'
+mysql> INSERT INTO ActorView2 VALUES (DEFAULT,'Toli', 'Hayl', '2008-02-01', 'Female', 'Married', 250.00);
+ERROR 1369 (HY000): CHECK OPTION failed 'MovieIndustry.ActorView2'
+mysql> INSERT INTO ActorView2 VALUES (DEFAULT,'Toli', 'Hayl', '1998-02-01', 'Female', 'Married', 250.00);
+ERROR 1369 (HY000): CHECK OPTION failed 'MovieIndustry.ActorView2'
+mysql> select * from ActorView;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |
+|  2 | Mad       | Titan    | 1968-02-12 | Male   | Married       |                 45 |
+|  3 | Salman    | Khan     | 1965-12-27 | Male   | Single        |                350 |
+|  4 | Akshay    | Kumar    | 1967-09-09 | Male   | Married       |                325 |
+|  5 | Emma      | Watson   | 1990-04-15 | Female | Single        |                 90 |
+|  7 | Ram       | Charan   | 1985-03-27 | Male   | Married       |                180 |
+|  8 | Rishi     | Kapoor   | 1952-09-04 | Male   | Married       |                 40 |
+|  9 | Shraddha  | Kapoor   | 1990-04-15 | Female | Single        |                 10 |
+| 10 | Amitabh   | Bachchan | 1942-10-11 | Male   | Married       |                410 |
+| 11 | Deepika   | Padukon  | 1986-01-05 | Female | Single        |                 35 |
+| 16 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
+| 18 | Tomomyl   | Hansyl   | 1966-02-01 | Female | Married       |                250 |
+| 19 | Tol       | Hayl     | 1966-02-01 | Female | Married       |                250 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+13 rows in set (0.00 sec)
+
+mysql> select * from ActorView2;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |
+|  5 | Emma      | Watson   | 1990-04-15 | Female | Single        |                 90 |
+|  7 | Ram       | Charan   | 1985-03-27 | Male   | Married       |                180 |
+|  9 | Shraddha  | Kapoor   | 1990-04-15 | Female | Single        |                 10 |
+| 11 | Deepika   | Padukon  | 1986-01-05 | Female | Single        |                 35 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+5 rows in set (0.00 sec)
+
+mysql> show create ActorView;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'ActorView' at line 1
+mysql> show create view ActorView;
++-----------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------+----------------------+
+| View      | Create View                                                                                                                                                                                                                                                                                                                                                                                                                                                  | character_set_client | collation_connection |
++-----------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------+----------------------+
+| ActorView | CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `ActorView` AS select `Actors`.`Id` AS `Id`,`Actors`.`FirstName` AS `FirstName`,`Actors`.`LastName` AS `LastName`,`Actors`.`DoB` AS `DoB`,`Actors`.`Gender` AS `Gender`,`Actors`.`MaritalStatus` AS `MaritalStatus`,`Actors`.`NetWorthInMillions` AS `NetWorthInMillions` from `Actors` where (timestampdiff(YEAR,`Actors`.`DoB`,curdate()) > 30) WITH CASCADED CHECK OPTION | utf8mb4              | utf8mb4_0900_ai_ci   |
++-----------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------+----------------------+
+1 row in set (0.01 sec)
+
+mysql> show create view ActorView2;
++------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------+----------------------+
+| View       | Create View                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | character_set_client | collation_connection |
++------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------+----------------------+
+| ActorView2 | CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `ActorView2` AS select `ActorView`.`Id` AS `Id`,`ActorView`.`FirstName` AS `FirstName`,`ActorView`.`LastName` AS `LastName`,`ActorView`.`DoB` AS `DoB`,`ActorView`.`Gender` AS `Gender`,`ActorView`.`MaritalStatus` AS `MaritalStatus`,`ActorView`.`NetWorthInMillions` AS `NetWorthInMillions` from `ActorView` where (timestampdiff(YEAR,`ActorView`.`DoB`,curdate()) < 50) WITH CASCADED CHECK OPTION | utf8mb4              | utf8mb4_0900_ai_ci   |
++------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------+----------------------+
+1 row in set (0.00 sec)
+
+mysql> drop view ActorView2;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create or replace view ActorView2 as Select * from ActorView where timestampdiff(YEAR, DoB, CURDATE())<50;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> INSERT INTO ActorView2 VALUES (DEFAULT,'Toli', 'Hayl', '1998-02-01', 'Female', 'Married', 250.00);
+ERROR 1369 (HY000): CHECK OPTION failed 'MovieIndustry.ActorView2'
+mysql> INSERT INTO ActorView2 VALUES (DEFAULT,'Toli', 'Hayl', '2005-02-01', 'Female', 'Married', 250.00);
+ERROR 1369 (HY000): CHECK OPTION failed 'MovieIndustry.ActorView2'
+mysql> INSERT INTO ActorView2 VALUES (DEFAULT,'Toli', 'Hayl', '1995-02-01', 'Female', 'Married', 250.00);
+ERROR 1369 (HY000): CHECK OPTION failed 'MovieIndustry.ActorView2'
+mysql> drop view ActorView, ActorView2;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> show full tables;
++-------------------------+------------+
+| Tables_in_MovieIndustry | Table_type |
++-------------------------+------------+
+| Actors                  | BASE TABLE |
+| Movies                  | BASE TABLE |
++-------------------------+------------+
+2 rows in set (0.00 sec)
+
+mysql> create view ActorView1 as Select * from Actor where timestampdiff(YEAR, DoB, CURDATE())>40;
+ERROR 1146 (42S02): Table 'MovieIndustry.Actor' doesn't exist
+mysql> create view ActorView1 as Select * from Actors where timestampdiff(YEAR, DoB, CURDATE())>40;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create or replace view ActorView2 as Select * from ActorView1 with cascaded check option;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from ActorView1;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |
+|  2 | Mad       | Titan    | 1968-02-12 | Male   | Married       |                 45 |
+|  3 | Salman    | Khan     | 1965-12-27 | Male   | Single        |                350 |
+|  4 | Akshay    | Kumar    | 1967-09-09 | Male   | Married       |                325 |
+|  8 | Rishi     | Kapoor   | 1952-09-04 | Male   | Married       |                 40 |
+| 10 | Amitabh   | Bachchan | 1942-10-11 | Male   | Married       |                410 |
+| 16 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
+| 18 | Tomomyl   | Hansyl   | 1966-02-01 | Female | Married       |                250 |
+| 19 | Tol       | Hayl     | 1966-02-01 | Female | Married       |                250 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+9 rows in set (0.00 sec)
+
+mysql> select * from ActorView2;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |
+|  2 | Mad       | Titan    | 1968-02-12 | Male   | Married       |                 45 |
+|  3 | Salman    | Khan     | 1965-12-27 | Male   | Single        |                350 |
+|  4 | Akshay    | Kumar    | 1967-09-09 | Male   | Married       |                325 |
+|  8 | Rishi     | Kapoor   | 1952-09-04 | Male   | Married       |                 40 |
+| 10 | Amitabh   | Bachchan | 1942-10-11 | Male   | Married       |                410 |
+| 16 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
+| 18 | Tomomyl   | Hansyl   | 1966-02-01 | Female | Married       |                250 |
+| 19 | Tol       | Hayl     | 1966-02-01 | Female | Married       |                250 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+9 rows in set (0.00 sec)
+
+mysql> select * from Actors;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |
+|  2 | Mad       | Titan    | 1968-02-12 | Male   | Married       |                 45 |
+|  3 | Salman    | Khan     | 1965-12-27 | Male   | Single        |                350 |
+|  4 | Akshay    | Kumar    | 1967-09-09 | Male   | Married       |                325 |
+|  5 | Emma      | Watson   | 1990-04-15 | Female | Single        |                 90 |
+|  6 | Talitha   | Bateman  | 2001-09-04 | Male   | Single        |                 40 |
+|  7 | Ram       | Charan   | 1985-03-27 | Male   | Married       |                180 |
+|  8 | Rishi     | Kapoor   | 1952-09-04 | Male   | Married       |                 40 |
+|  9 | Shraddha  | Kapoor   | 1990-04-15 | Female | Single        |                 10 |
+| 10 | Amitabh   | Bachchan | 1942-10-11 | Male   | Married       |                410 |
+| 11 | Deepika   | Padukon  | 1986-01-05 | Female | Single        |                 35 |
+| 16 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
+| 17 | Tomy      | Hanksy   | 2006-01-01 | Male   | Married       |                350 |
+| 18 | Tomomyl   | Hansyl   | 1966-02-01 | Female | Married       |                250 |
+| 19 | Tol       | Hayl     | 1966-02-01 | Female | Married       |                250 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+15 rows in set (0.00 sec)
+
+mysql> select * from ActorView1;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |
+|  2 | Mad       | Titan    | 1968-02-12 | Male   | Married       |                 45 |
+|  3 | Salman    | Khan     | 1965-12-27 | Male   | Single        |                350 |
+|  4 | Akshay    | Kumar    | 1967-09-09 | Male   | Married       |                325 |
+|  8 | Rishi     | Kapoor   | 1952-09-04 | Male   | Married       |                 40 |
+| 10 | Amitabh   | Bachchan | 1942-10-11 | Male   | Married       |                410 |
+| 16 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
+| 18 | Tomomyl   | Hansyl   | 1966-02-01 | Female | Married       |                250 |
+| 19 | Tol       | Hayl     | 1966-02-01 | Female | Married       |                250 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+9 rows in set (0.00 sec)
+
+mysql> select * from ActorView2;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |
+|  2 | Mad       | Titan    | 1968-02-12 | Male   | Married       |                 45 |
+|  3 | Salman    | Khan     | 1965-12-27 | Male   | Single        |                350 |
+|  4 | Akshay    | Kumar    | 1967-09-09 | Male   | Married       |                325 |
+|  8 | Rishi     | Kapoor   | 1952-09-04 | Male   | Married       |                 40 |
+| 10 | Amitabh   | Bachchan | 1942-10-11 | Male   | Married       |                410 |
+| 16 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
+| 18 | Tomomyl   | Hansyl   | 1966-02-01 | Female | Married       |                250 |
+| 19 | Tol       | Hayl     | 1966-02-01 | Female | Married       |                250 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+9 rows in set (0.00 sec)
+
+mysql> INSERT INTO ActorsView2 
+    -> VALUES (DEFAULT, 'Young', 'Actor', '2000-01-01', 'Male', 'Single', DEFAULT);
+ERROR 1146 (42S02): Table 'MovieIndustry.ActorsView2' doesn't exist
+mysql> INSERT INTO ActorView2  VALUES (DEFAULT, 'Young', 'Actor', '2000-01-01', 'Male', 'Single', DEFAULT);
+ERROR 1364 (HY000): Field 'NetWorthInMillions' doesn't have a default value
+mysql> INSERT INTO ActorView2  VALUES (DEFAULT, 'Young', 'Actor', '2000-01-01', 'Male', 'Single', 100);
+ERROR 1369 (HY000): CHECK OPTION failed 'MovieIndustry.ActorView2'
+mysql> CREATE OR REPLACE VIEW ActorsView3 AS
+    -> SELECT * 
+    -> FROM ActorsView2
+    -> WHERE TIMESTAMPDIFF(YEAR, DoB, CURDATE()) < 50;  
+ERROR 1146 (42S02): Table 'MovieIndustry.ActorsView2' doesn't exist
+mysql> CREATE OR REPLACE VIEW ActorView3 AS SELECT *  FROM ActorView2 WHERE TIMESTAMPDIFF(YEAR, DoB, CURDATE()) < 50;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> select * from ActorView3;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+1 row in set (0.00 sec)
+
+mysql> INSERT INTO ActorsView3 
+    -> VALUES (DEFAULT, 'Young', 'Actor', '2000-01-01', 'Male', 'Single', DEFAULT);
+ERROR 1146 (42S02): Table 'MovieIndustry.ActorsView3' doesn't exist
+mysql> INSERT INTO ActorView3  VALUES (DEFAULT, 'Young', 'Actor', '2000-01-01', 'Male', 'Single', DEFAULT);
+ERROR 1364 (HY000): Field 'NetWorthInMillions' doesn't have a default value
+mysql> INSERT INTO ActorView3  VALUES (DEFAULT, 'Young', 'Actor', '2000-01-01', 'Male', 'Single',120);
+ERROR 1369 (HY000): CHECK OPTION failed 'MovieIndustry.ActorView3'
+mysql> INSERT INTO ActorView3  VALUES (DEFAULT, 'Young', 'Actor', '1960-01-01', 'Male', 'Single',120);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO ActorsView3
+    -> INSERT INTO ActorView3  VALUES (DEFAULT, 'Young', 'Actor', '2000-01-01', 'Male', 'Single',120);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'INSERT INTO ActorView3  VALUES (DEFAULT, 'Young', 'Actor', '2000-01-01', 'Male',' at line 2
+mysql> select * from ActorView3;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+1 row in set (0.01 sec)
+
+mysql> select * from ActorView2;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |
+|  2 | Mad       | Titan    | 1968-02-12 | Male   | Married       |                 45 |
+|  3 | Salman    | Khan     | 1965-12-27 | Male   | Single        |                350 |
+|  4 | Akshay    | Kumar    | 1967-09-09 | Male   | Married       |                325 |
+|  8 | Rishi     | Kapoor   | 1952-09-04 | Male   | Married       |                 40 |
+| 10 | Amitabh   | Bachchan | 1942-10-11 | Male   | Married       |                410 |
+| 16 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
+| 18 | Tomomyl   | Hansyl   | 1966-02-01 | Female | Married       |                250 |
+| 19 | Tol       | Hayl     | 1966-02-01 | Female | Married       |                250 |
+| 20 | Young     | Actor    | 1960-01-01 | Male   | Single        |                120 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+10 rows in set (0.00 sec)
+
+mysql> select * from ActorView1;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |
+|  2 | Mad       | Titan    | 1968-02-12 | Male   | Married       |                 45 |
+|  3 | Salman    | Khan     | 1965-12-27 | Male   | Single        |                350 |
+|  4 | Akshay    | Kumar    | 1967-09-09 | Male   | Married       |                325 |
+|  8 | Rishi     | Kapoor   | 1952-09-04 | Male   | Married       |                 40 |
+| 10 | Amitabh   | Bachchan | 1942-10-11 | Male   | Married       |                410 |
+| 16 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
+| 18 | Tomomyl   | Hansyl   | 1966-02-01 | Female | Married       |                250 |
+| 19 | Tol       | Hayl     | 1966-02-01 | Female | Married       |                250 |
+| 20 | Young     | Actor    | 1960-01-01 | Male   | Single        |                120 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+10 rows in set (0.00 sec)
+
+mysql> select * from Actors;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Prabhas   | Raju     | 1979-10-23 | Male   | Married       |                 29 |
+|  2 | Mad       | Titan    | 1968-02-12 | Male   | Married       |                 45 |
+|  3 | Salman    | Khan     | 1965-12-27 | Male   | Single        |                350 |
+|  4 | Akshay    | Kumar    | 1967-09-09 | Male   | Married       |                325 |
+|  5 | Emma      | Watson   | 1990-04-15 | Female | Single        |                 90 |
+|  6 | Talitha   | Bateman  | 2001-09-04 | Male   | Single        |                 40 |
+|  7 | Ram       | Charan   | 1985-03-27 | Male   | Married       |                180 |
+|  8 | Rishi     | Kapoor   | 1952-09-04 | Male   | Married       |                 40 |
+|  9 | Shraddha  | Kapoor   | 1990-04-15 | Female | Single        |                 10 |
+| 10 | Amitabh   | Bachchan | 1942-10-11 | Male   | Married       |                410 |
+| 11 | Deepika   | Padukon  | 1986-01-05 | Female | Single        |                 35 |
+| 16 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
+| 17 | Tomy      | Hanksy   | 2006-01-01 | Male   | Married       |                350 |
+| 18 | Tomomyl   | Hansyl   | 1966-02-01 | Female | Married       |                250 |
+| 19 | Tol       | Hayl     | 1966-02-01 | Female | Married       |                250 |
+| 20 | Young     | Actor    | 1960-01-01 | Male   | Single        |                120 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+16 rows in set (0.01 sec)
+
+mysql> alter view ActorView as select * from ActorView1 with local check option;
+ERROR 1146 (42S02): Table 'MovieIndustry.ActorView' doesn't exist
+mysql> alter view ActorView2 as select * from ActorView1 with local check option;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> INSERT INTO ActorView2  VALUES (DEFAULT, 'Young', 'Actor', '2000-01-01', 'Male', 'Single',120);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO ActorView2  VALUES (DEFAULT, 'Young', 'Actor', '1940-01-01', 'Male', 'Single',120);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> show full tables where table_type="View";
+Empty set (0.00 sec)
+
+mysql> show full tables where table_type="VIEW";
++-------------------------+------------+
+| Tables_in_MovieIndustry | Table_type |
++-------------------------+------------+
+| ActorView1              | VIEW       |
+| ActorView2              | VIEW       |
+| ActorView3              | VIEW       |
++-------------------------+------------+
+3 rows in set (0.01 sec)
+
+mysql> rename table ActorView1 to AV1;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> show full tables where table_type="VIEW";
++-------------------------+------------+
+| Tables_in_MovieIndustry | Table_type |
++-------------------------+------------+
+| AV1                     | VIEW       |
+| ActorView2              | VIEW       |
+| ActorView3              | VIEW       |
++-------------------------+------------+
+3 rows in set (0.00 sec)
+
+mysql> drop view where table_type="VIEW" and table_schema="MovieIndustry";
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'where table_type="VIEW" and table_schema="MovieIndustry"' at line 1
+mysql> drop view AV1,ActorView2,ActorView3;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> show full tables where table_type="VIEW";
+Empty set (0.00 sec)
+
+mysql> show full tables ;
++-------------------------+------------+
+| Tables_in_MovieIndustry | Table_type |
++-------------------------+------------+
+| Actors                  | BASE TABLE |
+| Movies                  | BASE TABLE |
++-------------------------+------------+
+2 rows in set (0.00 sec)
