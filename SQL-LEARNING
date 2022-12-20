@@ -10530,3 +10530,2184 @@ mysql> show full tables ;
 | Movies                  | BASE TABLE |
 +-------------------------+------------+
 2 rows in set (0.00 sec)
+---------------------------------------------------------------- PROCEDURES----------------------------------------------------------------
+
+mysql> CREATE PROCEDURE PrintMaleActors(
+    ->        OUT str  VARCHAR(255))
+    -> BEGIN
+    -> 
+    ->   DECLARE TotalRows INT DEFAULT 0;
+    ->   DECLARE CurrentRow INT;
+    ->   DECLARE fname VARCHAR (25);
+    ->   DECLARE lname VARCHAR (25);
+    ->   DECLARE gen VARCHAR (10);
+    -> 
+    ->   SET CurrentRow = 1;
+    ->   SET str =  '';
+    -> 
+    ->   SELECT COUNT(*) INTO TotalRows 
+    ->   FROM Actors;
+    -> 
+    ->   Print_loop: WHILE CurrentRow < TotalRows DO
+    ->     SELECT Gender INTO gen 
+    ->     FROM Actors 
+    ->     WHERE Id = CurrentRow;
+    -> 
+    ->     IF gen LIKE 'Male' THEN
+    ->       SELECT FirstName INTO fname 
+    ->       FROM Actors 
+    ->       WHERE Id = CurrentRow;
+    -> 
+    ->       SELECT LastName INTO lname 
+    ->       FROM Actors 
+    ->       WHERE Id = CurrentRow;
+    -> 
+    ->       SET  str = CONCAT(str,fname,' ',lname,', ');
+    ->     END IF;
+    -> 
+    ->     SET CurrentRow = CurrentRow + 1;
+    ->   END WHILE Print_loop;
+    -> End **
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER ;
+mysql> call PrintMaleActors(@result);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> selct @result;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'selct @result' at line 1
+mysql> select @result;
++--------------------------------------------------------------------+
+| @result                                                            |
++--------------------------------------------------------------------+
+| Brad Pitt, Johnny Depp, Rishi Kapoor, Rajni Kanth, Hritik Roshan,  |
++--------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> DROP PROCEDURE PrintMaleActors;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER **
+mysql> CREATE PROCEDURE PrintMaleActors(
+    ->        OUT str  VARCHAR(255))
+    -> BEGIN
+    ->   DECLARE TotalRows INT DEFAULT 0;
+    ->   DECLARE CurrentRow INT;
+    ->   DECLARE fname VARCHAR (25);
+    ->   DECLARE lname VARCHAR (25);
+    ->   DECLARE gen VARCHAR (10);
+    -> 
+    ->   SET CurrentRow = 1;
+    ->   SET str =  '';
+    -> 
+    ->   SELECT COUNT(*) INTO TotalRows 
+    ->   FROM Actors;
+    -> 
+    ->   Print_loop: REPEAT 
+    ->     SELECT Gender INTO gen 
+    ->     FROM Actors 
+    ->     WHERE Id = CurrentRow;
+    -> 
+    ->     IF gen LIKE 'Male' THEN
+    ->       SELECT FirstName INTO fname 
+    ->       FROM Actors 
+    ->       WHERE Id = CurrentRow;
+    -> 
+    ->       SELECT LastName INTO lname 
+    ->       FROM Actors 
+    ->       WHERE Id = CurrentRow;
+    -> 
+    ->       SET  str = CONCAT(str,fname,' ',lname,', ');
+    ->     END IF;
+    ->   
+    ->     SET CurrentRow = CurrentRow + 1;
+    ->     UNTIL CurrentRow > TotalRows
+    ->   END REPEAT Print_loop;
+    -> End **
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER ;
+mysql> 
+mysql> call PrintMaleActors(@result);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select @result;
++--------------------------------------------------------------------+
+| @result                                                            |
++--------------------------------------------------------------------+
+| Brad Pitt, Johnny Depp, Rishi Kapoor, Rajni Kanth, Hritik Roshan,  |
++--------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> DROP PROCEDURE PrintMaleActors;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> 
+mysql> DELIMITER **
+mysql> CREATE PROCEDURE PrintMaleActors(
+    ->        OUT str  VARCHAR(255))
+    -> BEGIN
+    ->   DECLARE TotalRows INT DEFAULT 0;
+    ->   DECLARE CurrentRow INT;
+    ->   DECLARE fname VARCHAR (25);
+    ->   DECLARE lname VARCHAR (25);
+    ->   DECLARE gen VARCHAR (10);
+    -> 
+    ->   SET CurrentRow = 1;
+    ->   SET str =  '';
+    -> 
+    ->   SELECT COUNT(*) INTO TotalRows 
+    ->   FROM Actors;
+    -> 
+    ->   Print_loop: LOOP
+    ->     IF CurrentRow > TotalRows THEN
+    ->       LEAVE Print_loop;
+    ->     END IF;
+    -> 
+    ->     SELECT Gender INTO gen 
+    ->     FROM Actors 
+    ->     WHERE Id = CurrentRow;
+    -> 
+    ->     IF gen NOT LIKE 'Male' THEN
+    ->       SET CurrentRow = CurrentRow + 1;
+    ->       ITERATE Print_loop;
+    ->     ELSE
+    ->       SELECT FirstName INTO fname 
+    ->       FROM Actors 
+    ->       WHERE Id = CurrentRow;
+    -> 
+    ->       SELECT LastName INTO lname 
+    ->       FROM Actors 
+    ->       WHERE Id = CurrentRow;
+    -> 
+    ->       SET  str = CONCAT(str,fname,' ',lname,', ');
+    ->       SET CurrentRow = CurrentRow + 1;
+    ->     END IF;
+    ->   END LOOP Print_loop;
+    -> End **
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> DELIMITER ;
+mysql>  call PrintMaleActors(@result);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select @result;
++--------------------------------------------------------------------+
+| @result                                                            |
++--------------------------------------------------------------------+
+| Brad Pitt, Johnny Depp, Rishi Kapoor, Rajni Kanth, Hritik Roshan,  |
++--------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> Drop Procedure PrintMaleActors();
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '()' at line 1
+mysql> Drop Procedure PrintMaleActors;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER **
+mysql> CREATE PROCEDURE PrintMaleActors(
+    ->        OUT str  VARCHAR(255))
+    -> BEGIN
+    ->   DECLARE fName VARCHAR(25);
+    ->   DECLARE lName VARCHAR(25);
+    ->   DECLARE LastRowFetched INTEGER DEFAULT 0;
+    ->   DEClARE Cur_MaleActors CURSOR FOR 
+    ->     SELECT FirstName, SecondName 
+    ->     FROM Actors 
+    ->     WHERE Gender = 'Male';
+    ->   DECLARE CONTINUE HANDLER FOR NOT FOUND 
+    ->     SET LastRowFetched = 1;
+    -> 
+    ->   SET str =  '';
+    ->   OPEN Cur_MaleActors;
+    -> 
+    ->   Print_loop: LOOP
+    ->     FETCH Cur_MaleActors INTO fName, lName;
+    ->     IF LastRowFetched = 1 THEN
+    ->       LEAVE Print_loop;
+    ->     END IF;
+    ->     SET  str = CONCAT(str,fName,' ',lName,', ');
+    ->   END LOOP Print_loop;
+    -> 
+    ->   CLOSE Cur_MaleActors;
+    ->   SET LastRowFetched = 0;
+    -> END **
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER ;
+mysql> ^M
+mysql> DROP PROCEDURE PrintMaleActors;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER **
+mysql> CREATE PROCEDURE PrintMaleActors(
+    ->        OUT str  VARCHAR(255))
+    -> BEGIN
+    ->   DECLARE fName VARCHAR(25);
+    ->   DECLARE lName VARCHAR(25);
+    ->   DECLARE LastRowFetched INTEGER DEFAULT 0;
+    ->   DEClARE Cur_MaleActors CURSOR FOR 
+    ->     SELECT FirstName, LastName 
+    ->     FROM Actors 
+    ->     WHERE Gender = 'Male';
+    ->   DECLARE CONTINUE HANDLER FOR NOT FOUND 
+    ->     SET LastRowFetched = 1;
+    -> 
+    ->   SET str =  '';
+    ->   OPEN Cur_MaleActors;
+    -> 
+    ->   Print_loop: LOOP
+    ->     FETCH Cur_MaleActors INTO fName, lName;
+    ->     IF LastRowFetched = 1 THEN
+    ->       LEAVE Print_loop;
+    ->     END IF;
+    ->     SET  str = CONCAT(str,fName,' ',lName,', ');
+    ->   END LOOP Print_loop;
+    -> 
+    ->   CLOSE Cur_MaleActors;
+    ->   SET LastRowFetched = 0;
+    -> END **
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER ;
+mysql> 
+mysql> call PrintMaleActors(@result);
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select @result;
++--------------------------------------------------------------------+
+| @result                                                            |
++--------------------------------------------------------------------+
+| Brad Pitt, Johnny Depp, Rishi Kapoor, Rajni Kanth, Hritik Roshan,  |
++--------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> desc Movies;
++----------------------------------+--------------------------------------------------------------------+------+-----+---------+-------+
+| Field                            | Type                                                               | Null | Key | Default | Extra |
++----------------------------------+--------------------------------------------------------------------+------+-----+---------+-------+
+| Movie_Name                       | varchar(120)                                                       | YES  |     | NULL    |       |
+| Movie_Genera                     | enum('Action','Adventure','Romantic','Horror','Sci-Fi','Thriller') | YES  |     | NULL    |       |
+| Movie_Language                   | varchar(20)                                                        | YES  |     | NULL    |       |
+| WorldWide_Collection_In_Millions | decimal(10,0)                                                      | YES  |     | NULL    |       |
+| Release_Year                     | date                                                               | YES  |     | NULL    |       |
+| Id                               | int                                                                | YES  |     | NULL    |       |
++----------------------------------+--------------------------------------------------------------------+------+-----+---------+-------+
+6 rows in set (0.01 sec)
+
+mysql> ^C
+mysql> ^C
+mysql> ^C
+mysql> DELIMITER **
+mysql> CREATE PROCEDURE InsertMovies(
+    ->  IN MovieId INT,
+    ->  IN MovieName VARCHAR (120),
+    ->  IN MovieGenera VARCHAR enum('Action','Adventure','Romantic','Horror','Sci-Fi','Thriller'),
+    ->  IN MovieLanguage VARCHAR (20),
+    ->  IN WorldWideCollection decimal(10,0),
+    ->  IN ReleaseYear date
+    -> 
+    -> BEGIN
+    ->  DECLARE CONTINUE HANDLER FOR 1062
+    ->  BEGIN
+    ->  SELECT 'Duplicate key error occurred' AS Message;
+    ->  END;
+    -> 
+    ->  INSERT INTO Movies(Id,Movie_Name,Movie_Genera,Movie_Language,WorldWide_Collection_In_Millions,Release_Year) VALUES(MovieId,MovieName,MovieGenera,MovieLanguage,WorldWideCollection,ReleaseYear);
+    -> 
+    ->  SELECT COUNT(*) AS AssetsOfMovie
+    ->  FROM Movies
+    ->  WHERE MovieId = Id;
+    -> END**
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'enum('Action','Adventure','Romantic','Horror','Sci-Fi','Thriller'),
+ IN MovieLan' at line 4
+mysql> DELIMITER ;
+mysql> DELIMITER **
+mysql> CREATE PROCEDURE InsertMovies(
+    ->  IN MovieId INT,
+    ->  IN MovieName VARCHAR (120),
+    ->  IN MovieGenera VARCHAR enum(Action,Adventure,Romantic,Horror,Sci-Fi,Thriller),
+    ->  IN MovieLanguage VARCHAR (20),
+    ->  IN WorldWideCollection decimal(10,0),
+    ->  IN ReleaseYear date
+    -> 
+    -> BEGIN
+    ->  DECLARE CONTINUE HANDLER FOR 1062
+    ->  BEGIN
+    ->  SELECT 'Duplicate key error occurred' AS Message;
+    ->  END;
+    -> 
+    ->  INSERT INTO Movies(Id,Movie_Name,Movie_Genera,Movie_Language,WorldWide_Collection_In_Millions,Release_Year) VALUES(MovieId,MovieName,MovieGenera,MovieLanguage,WorldWideCollection,ReleaseYear);
+    -> 
+    ->  SELECT COUNT(*) AS AssetsOfMovie
+    ->  FROM Movies
+    ->  WHERE MovieId = Id;
+    -> END**
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'enum(Action,Adventure,Romantic,Horror,Sci-Fi,Thriller),
+ IN MovieLanguage VARCHA' at line 4
+mysql> DELIMITER ;
+mysql> 
+mysql> 
+mysql> DELIMITER **
+mysql> CREATE PROCEDURE InsertMovies(
+    ->  IN MovieId INT,
+    ->  IN MovieName VARCHAR (120),
+    ->  IN MovieGenera enum(Action,Adventure,Romantic,Horror,Sci-Fi,Thriller),
+    ->  IN MovieLanguage VARCHAR (20),
+    ->  IN WorldWideCollection decimal(10,0),
+    ->  IN ReleaseYear date
+    -> 
+    -> BEGIN
+    ->  DECLARE CONTINUE HANDLER FOR 1062
+    ->  BEGIN
+    ->  SELECT 'Duplicate key error occurred' AS Message;
+    ->  END;
+    -> 
+    ->  INSERT INTO Movies(Id,Movie_Name,Movie_Genera,Movie_Language,WorldWide_Collection_In_Millions,Release_Year) VALUES(MovieId,MovieName,MovieGenera,MovieLanguage,WorldWideCollection,ReleaseYear);
+    -> 
+    ->  SELECT COUNT(*) AS AssetsOfMovie
+    ->  FROM Movies
+    ->  WHERE MovieId = Id;
+    -> END**
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'Action,Adventure,Romantic,Horror,Sci-Fi,Thriller),
+ IN MovieLanguage VARCHAR (20' at line 4
+mysql> DELIMITER ;
+mysql> 
+mysql> DELIMITER **
+mysql> CREATE PROCEDURE InsertMovies(
+    ->  IN MovieId INT,
+    ->  IN MovieName VARCHAR (120),
+    ->  IN MovieGenera enum('Action','Adventure','Romantic','Horror','Sci-Fi','Thriller'),
+    ->  IN MovieLanguage VARCHAR (20),
+    ->  IN WorldWideCollection decimal(10,0),
+    ->  IN ReleaseYear date
+    -> 
+    -> BEGIN
+    ->  DECLARE CONTINUE HANDLER FOR 1062
+    ->  BEGIN
+    ->  SELECT 'Duplicate key error occurred' AS Message;
+    ->  END;
+    -> 
+    ->  INSERT INTO Movies(Id,Movie_Name,Movie_Genera,Movie_Language,WorldWide_Collection_In_Millions,Release_Year) VALUES(MovieId,MovieName,MovieGenera,MovieLanguage,WorldWideCollection,ReleaseYear);
+    -> 
+    ->  SELECT COUNT(*) AS AssetsOfMovie
+    ->  FROM Movies
+    ->  WHERE MovieId = Id;
+    -> END**
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'BEGIN
+ DECLARE CONTINUE HANDLER FOR 1062
+ BEGIN
+ SELECT 'Duplicate key error occ' at line 9
+mysql> DELIMITER ;
+mysql> 
+mysql> 
+mysql> 
+mysql> --------------------------------------------------------------------------------------------
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '--------------------------------------------------------------------------------' at line 1
+mysql> 
+mysql> DELIMITER **
+mysql> CREATE PROCEDURE InsertMovies(
+    ->  IN MovieId INT,
+    ->  IN MovieName VARCHAR (120),
+    ->  IN MovieGenera enum('Action','Adventure','Romantic','Horror','Sci-Fi','Thriller'),
+    ->  IN MovieLanguage VARCHAR (20),
+    ->  IN WorldWideCollection decimal(10,0),
+    ->  IN ReleaseYear date
+    -> 
+    -> BEGIN
+    ->  DECLARE CONTINUE HANDLER FOR 1062
+    ->  BEGIN
+    ->     SELECT 'Duplicate key error occurred' AS Message;
+    ->  END;
+    -> 
+    ->  INSERT INTO Movies(Id,Movie_Name,Movie_Genera,Movie_Language,WorldWide_Collection_In_Millions,Release_Year) 
+    ->  VALUES(MovieId,MovieName,MovieGenera,MovieLanguage,WorldWideCollection,ReleaseYear);
+    -> 
+    ->  SELECT COUNT(*) AS AssetsOfMovie
+    ->  FROM Movies
+    ->  WHERE MovieId = Id;
+    -> END**
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'BEGIN
+ DECLARE CONTINUE HANDLER FOR 1062
+ BEGIN
+    SELECT 'Duplicate key error ' at line 9
+mysql> DELIMITER ;
+mysql> 
+mysql> DELIMITER **
+mysql> CREATE PROCEDURE InsertMovies(
+    ->  IN MovieId INT,
+    ->  IN MovieName VARCHAR (120),
+    ->  IN MovieGenera enum('Action','Adventure','Romantic','Horror','Sci-Fi','Thriller'),
+    ->  IN MovieLanguage VARCHAR (20),
+    ->  IN WorldWideCollection decimal(10,0),
+    ->  IN ReleaseYear date
+    -> 
+    -> BEGIN
+    ->  DECLARE CONTINUE HANDLER FOR 1062
+    ->     BEGIN
+    ->         SELECT 'Duplicate key error occurred' AS Message;
+    ->     END;
+    -> 
+    ->  INSERT INTO Movies(Id,Movie_Name,Movie_Genera,Movie_Language,WorldWide_Collection_In_Millions,Release_Year) 
+    ->  VALUES(MovieId,MovieName,MovieGenera,MovieLanguage,WorldWideCollection,ReleaseYear);
+    -> 
+    ->  SELECT COUNT(*) AS AssetsOfMovie
+    ->  FROM Movies
+    ->  WHERE MovieId = Id;
+    -> END**
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'BEGIN
+ DECLARE CONTINUE HANDLER FOR 1062
+    BEGIN
+        SELECT 'Duplicate key' at line 9
+mysql> DELIMITER ;
+mysql> 
+mysql> 
+mysql> DELIMITER **
+mysql> CREATE PROCEDURE InsertMovies(
+    ->  IN MovieId INT,
+    ->  IN MovieName VARCHAR (120),
+    ->  IN MovieGenera enum('Action','Adventure','Romantic','Horror','Sci-Fi','Thriller'),
+    ->  IN MovieLanguage VARCHAR (20),
+    ->  IN WorldWideCollection decimal(10,0),
+    ->  IN ReleaseYear date)
+    -> 
+    -> BEGIN
+    ->     DECLARE CONTINUE HANDLER FOR 1062
+    ->     BEGIN
+    ->         SELECT 'Duplicate key error occurred' AS Message;
+    ->     END;
+    -> 
+    ->     INSERT INTO Movies(Id,Movie_Name,Movie_Genera,Movie_Language,WorldWide_Collection_In_Millions,Release_Year) VALUES(MovieId,MovieName,MovieGenera,MovieLanguage,WorldWideCollection,ReleaseYear);
+    -> 
+    ->     SELECT COUNT(*) AS AssetsOfMovie FROM Movies WHERE MovieId = Id;
+    -> END**
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> 
+mysql> DELIMITER ;
+mysql> 
+mysql> call ShowMovies();
++-------------------+--------------+----------------+----------------------------------+--------------+------+
+| Movie_Name        | Movie_Genera | Movie_Language | WorldWide_Collection_In_Millions | Release_Year | Id   |
++-------------------+--------------+----------------+----------------------------------+--------------+------+
+| Avenger:EndGame   | Sci-Fi       | Multiple       |                             1500 | 2016-06-05   |    2 |
+| Sholay            | Thriller     | Hindi          |                             2000 | 1979-08-12   |   10 |
+| 1920              | Horror       | Hindi          |                              900 | 2021-08-23   |    4 |
+| Bajrangi Bhaijaan | Adventure    | Hindi          |                             1200 | 2020-11-16   |    3 |
+| Aashiqui 2        | Romantic     | Hindi          |                              800 | 2014-06-10   |    9 |
+| BaahuBali         | Action       | Multiple       |                            12000 | 2019-04-06   |    1 |
+| Transformers      | Sci-Fi       | English        |                             1000 | 2018-10-15   |    1 |
+| RRR               | Action       | Tamil          |                            15000 | 2019-12-12   |    7 |
++-------------------+--------------+----------------+----------------------------------+--------------+------+
+8 rows in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> call ShowActors();
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Jennifer  | Aniston  | 1969-11-02 | Female | Single        |                240 |
+|  2 | Brad      | Pitt     | 1963-12-18 | Male   | Single        |                240 |
+|  3 | Angelina  | Jolie    | 1975-06-04 | Female | Single        |                100 |
+|  4 | Dream     | Actress  | 9999-01-01 | Female | Single        |                110 |
+|  5 | Johnny    | Depp     | 1963-06-09 | Male   | Single        |                200 |
+|  6 | Rishi     | Kapoor   | 1950-02-22 | Male   | Married       |                250 |
+|  7 | Rajni     | Kanth    | 1950-12-12 | Male   | Married       |                 50 |
+|  8 | Hritik    | Roshan   | 1950-02-22 | Male   | Married       |                220 |
+|  9 | Madhuri   | Dixit    | 1958-06-11 | Female | Married       |                180 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+9 rows in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> call InsertMovies(5,"Pirates of Caribbean","Adventure","English",10000,"2017-05-26");
++---------------+
+| AssetsOfMovie |
++---------------+
+|             1 |
++---------------+
+1 row in set (0.01 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> call InsertMovies(5,"Pirates of Caribbean","Adventure","English",10000,"2017-05-26");
++---------------+
+| AssetsOfMovie |
++---------------+
+|             2 |
++---------------+
+1 row in set (0.01 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> call ShowMovies();
++----------------------+--------------+----------------+----------------------------------+--------------+------+
+| Movie_Name           | Movie_Genera | Movie_Language | WorldWide_Collection_In_Millions | Release_Year | Id   |
++----------------------+--------------+----------------+----------------------------------+--------------+------+
+| Avenger:EndGame      | Sci-Fi       | Multiple       |                             1500 | 2016-06-05   |    2 |
+| Sholay               | Thriller     | Hindi          |                             2000 | 1979-08-12   |   10 |
+| 1920                 | Horror       | Hindi          |                              900 | 2021-08-23   |    4 |
+| Bajrangi Bhaijaan    | Adventure    | Hindi          |                             1200 | 2020-11-16   |    3 |
+| Aashiqui 2           | Romantic     | Hindi          |                              800 | 2014-06-10   |    9 |
+| BaahuBali            | Action       | Multiple       |                            12000 | 2019-04-06   |    1 |
+| Transformers         | Sci-Fi       | English        |                             1000 | 2018-10-15   |    1 |
+| RRR                  | Action       | Tamil          |                            15000 | 2019-12-12   |    7 |
+| Pirates of Caribbean | Adventure    | English        |                            10000 | 2017-05-26   |    5 |
+| Pirates of Caribbean | Adventure    | English        |                            10000 | 2017-05-26   |    5 |
++----------------------+--------------+----------------+----------------------------------+--------------+------+
+10 rows in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> delete Actors where Movie_Name="Pirates of Caribbean";
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'where Movie_Name="Pirates of Caribbean"' at line 1
+mysql> delete from Actors where Movie_Name="Pirates of Caribbean";
+ERROR 1054 (42S22): Unknown column 'Movie_Name' in 'where clause'
+mysql> delete from Movies where Movie_Name="Pirates of Caribbean";
+Query OK, 2 rows affected (0.02 sec)
+
+mysql> call InsertMovies(5,"Pirates of Caribbean","Adventure","English",10000,"2017-05-26");
++---------------+
+| AssetsOfMovie |
++---------------+
+|             1 |
++---------------+
+1 row in set (0.01 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> call ShowMovies();
++----------------------+--------------+----------------+----------------------------------+--------------+------+
+| Movie_Name           | Movie_Genera | Movie_Language | WorldWide_Collection_In_Millions | Release_Year | Id   |
++----------------------+--------------+----------------+----------------------------------+--------------+------+
+| Avenger:EndGame      | Sci-Fi       | Multiple       |                             1500 | 2016-06-05   |    2 |
+| Sholay               | Thriller     | Hindi          |                             2000 | 1979-08-12   |   10 |
+| 1920                 | Horror       | Hindi          |                              900 | 2021-08-23   |    4 |
+| Bajrangi Bhaijaan    | Adventure    | Hindi          |                             1200 | 2020-11-16   |    3 |
+| Aashiqui 2           | Romantic     | Hindi          |                              800 | 2014-06-10   |    9 |
+| BaahuBali            | Action       | Multiple       |                            12000 | 2019-04-06   |    1 |
+| Transformers         | Sci-Fi       | English        |                             1000 | 2018-10-15   |    1 |
+| RRR                  | Action       | Tamil          |                            15000 | 2019-12-12   |    7 |
+| Pirates of Caribbean | Adventure    | English        |                            10000 | 2017-05-26   |    5 |
++----------------------+--------------+----------------+----------------------------------+--------------+------+
+9 rows in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> call InsertMovies(5,"Pirates of Caribbean","Adventure","English",10000,"2017-05-26");
++---------------+
+| AssetsOfMovie |
++---------------+
+|             2 |
++---------------+
+1 row in set (0.01 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> call InsertMovies(5,"Pirates of Caribbean","Adventure","English",10000,"2017-05-26");
++---------------+
+| AssetsOfMovie |
++---------------+
+|             3 |
++---------------+
+1 row in set (0.01 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> delete from Movies where Movie_Name="Pirates of Caribbean";
+Query OK, 3 rows affected (0.00 sec)
+
+mysql> call InsertMovies(5,"Pirates of Caribbean","Adventure","English",10000,"2017-05-26");
++---------------+
+| AssetsOfMovie |
++---------------+
+|             1 |
++---------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> call ShowActors();
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Jennifer  | Aniston  | 1969-11-02 | Female | Single        |                240 |
+|  2 | Brad      | Pitt     | 1963-12-18 | Male   | Single        |                240 |
+|  3 | Angelina  | Jolie    | 1975-06-04 | Female | Single        |                100 |
+|  4 | Dream     | Actress  | 9999-01-01 | Female | Single        |                110 |
+|  5 | Johnny    | Depp     | 1963-06-09 | Male   | Single        |                200 |
+|  6 | Rishi     | Kapoor   | 1950-02-22 | Male   | Married       |                250 |
+|  7 | Rajni     | Kanth    | 1950-12-12 | Male   | Married       |                 50 |
+|  8 | Hritik    | Roshan   | 1950-02-22 | Male   | Married       |                220 |
+|  9 | Madhuri   | Dixit    | 1958-06-11 | Female | Married       |                180 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+9 rows in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> DELIMITER **
+mysql> CREATE PROCEDURE AddActor(
+    ->         IN Name1 VARCHAR(20),
+    ->         IN Name2 VARCHAR(20), 
+    ->         IN Birthday DATE,
+    ->         IN networth INT )
+    -> BEGIN
+    ->     DECLARE age INT DEFAULT 0;
+    ->     SELECT TIMESTAMPDIFF (YEAR, Birthday, CURDATE())
+    ->     INTO age;
+    ->  
+    ->     IF(age < 1) THEN 
+    ->         SIGNAL SQLSTATE '45000'
+    ->         SET MESSAGE_TEXT = 'Incorrect DoB value. Age cannot be zero or less than zero';
+    ->     END IF;
+    ->     
+    ->     IF(networth < 1) THEN 
+    ->         SIGNAL SQLSTATE '45000'
+    ->             SET MESSAGE_TEXT = 'Incorrect NetWorth value. Net worth cannot be zero or less than zero';
+    ->     END IF;
+    ->     -- If all ok then INSERT a row in the Actors table
+    ->     INSERT INTO Actors (FirstName, LastName, Dob, NetWorthInMillions) 
+    ->     VALUES(Name1, Name2, Birthday, networth);
+    -> END **
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER ;
+mysql> 
+mysql> CALL AddActor('Jackson','Samuel','2023-12-21', 250);
+ERROR 1644 (45000): Incorrect DoB value. Age cannot be zero or less than zero
+mysql> CALL AddActor('Jackson','Samuel','1948-12-21', 0);
+ERROR 1644 (45000): Incorrect NetWorth value. Net worth cannot be zero or less than zero
+mysql> 
+mysql> 
+mysql> 
+mysql> DROP PROCEDURE AddActor;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER **
+mysql> CREATE PROCEDURE AddActor(
+    ->         IN Name1 VARCHAR(20),
+    ->         IN Name2 VARCHAR(20), 
+    ->         IN Birthday DATE,
+    ->         IN networth INT)
+    -> BEGIN
+    ->     DECLARE age INT DEFAULT 0;
+    ->     DECLARE InvalidValue CONDITION FOR SQLSTATE '45000';
+    ->  
+    ->     DECLARE CONTINUE HANDLER FOR InvalidValue 
+    ->     IF age < 1 THEN
+    ->         RESIGNAL;
+    ->     ELSEIF networth < 1 THEN
+    ->         RESIGNAL;
+    ->     END IF;
+    ->  
+    ->     SELECT TIMESTAMPDIFF (YEAR, Birthday, CURDATE())
+    ->     INTO age;
+    ->       
+    ->     IF age < 1 THEN
+    ->         SIGNAL InvalidValue;
+    ->     ELSEIF networth < 1 THEN
+    ->         SIGNAL InvalidValue;
+    ->     ELSE
+    ->         INSERT INTO Actors (FirstName, LastName, Dob, NetWorthInMillions) 
+    ->         VALUES(Name1, Name2, Birthday, networth);
+    ->     END IF;
+    -> END **
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> DELIMITER ;
+mysql> 
+mysql> CALL AddActor('Jackson','Samuel','2025-12-21', 250);
+ERROR 1644 (45000): Unhandled user-defined exception condition
+mysql> CALL AddActor('Jackson','Samuel','1948-12-21', 0);
+ERROR 1644 (45000): Unhandled user-defined exception condition
+mysql> 
+mysql> 
+mysql> DROP PROCEDURE AddActor;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER **
+mysql> CREATE PROCEDURE AddActor(
+    ->         IN FirstName varchar(20),
+    ->         IN SecondName varchar(20), 
+    ->         IN DoB date,
+    ->         IN networth int )
+    -> BEGIN
+    ->     DECLARE age INT DEFAULT 0;
+    ->     DECLARE InvalidValue CONDITION FOR SQLSTATE '45000';
+    ->  
+    ->     DECLARE CONTINUE HANDLER FOR InvalidValue
+    ->         IF age < 1 THEN 
+    ->             RESIGNAL SET MESSAGE_TEXT = 'Incorrect DoB value. Age cannot be zero or less than zero';
+    ->         ELSEIF networth < 1 THEN 
+    ->             RESIGNAL SET MESSAGE_TEXT = 'Incorrect NetWorth value. Net worth cannot be zero or less than zero';
+    ->         END IF;
+    ->     
+    ->     SELECT TIMESTAMPDIFF (YEAR, DoB, CURDATE())
+    ->     INTO age;
+    ->  
+    ->     IF age < 1 THEN 
+    ->         SIGNAL InvalidValue;
+    ->     ELSEIF networth < 1 THEN 
+    ->         SIGNAL InvalidValue;
+    ->     ELSE
+    ->         INSERT INTO Actors (FirstName, LastName, Dob, NetWorthInMillions) 
+    ->         VALUES(Name1, Name2, Birthday, networth);
+    ->     END IF;
+    -> END **
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER ;
+mysql> 
+mysql> CALL AddActor('Jackson','Samuel','2025-12-21', 250);
+ERROR 1644 (45000): Incorrect DoB value. Age cannot be zero or less than zero
+mysql> CALL AddActor('Jackson','Samuel','1948-12-21', 0);
+ERROR 1644 (45000): Incorrect NetWorth value. Net worth cannot be zero or less than zero
+mysql> 
+mysql> show function status;
++-----+----------------------------------+----------+---------------------+---------------------+---------------------+---------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------+----------------------+--------------------+
+| Db  | Name                             | Type     | Definer             | Modified            | Created             | Security_type | Comment                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | character_set_client | collation_connection | Database Collation |
++-----+----------------------------------+----------+---------------------+---------------------+---------------------+---------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------+----------------------+--------------------+
+| sys | extract_schema_from_file_name    | FUNCTION | mysql.sys@localhost | 2022-12-19 13:50:17 | 2022-12-19 13:50:17 | INVOKER       | 
+Description
+-----------
+
+Takes a raw file path, and attempts to extract the schema name from it.
+
+Useful for when interacting with Performance Schema data 
+concerning IO statistics, for example.
+
+Currently relies on the fact that a table data file will be within a 
+specified database directory (will not work with partitions or tables
+that specify an individual DATA_DIRECTORY).
+
+Parameters
+-----------
+
+path (VARCHAR(512)):
+  The full file path to a data file to extract the schema name from.
+
+Returns
+-----------
+
+VARCHAR(64)
+
+Example
+-----------
+
+mysql> SELECT sys.extract_schema_from_file_name('/var/lib/mysql/employees/employee.ibd');
++----------------------------------------------------------------------------+
+| sys.extract_schema_from_file_name('/var/lib/mysql/employees/employee.ibd') |
++----------------------------------------------------------------------------+
+| employees                                                                  |
++----------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+ | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| sys | extract_table_from_file_name     | FUNCTION | mysql.sys@localhost | 2022-12-19 13:50:17 | 2022-12-19 13:50:17 | INVOKER       | 
+Description
+-----------
+
+Takes a raw file path, and extracts the table name from it.
+
+Useful for when interacting with Performance Schema data 
+concerning IO statistics, for example.
+
+Parameters
+-----------
+
+path (VARCHAR(512)):
+  The full file path to a data file to extract the table name from.
+
+Returns
+-----------
+
+VARCHAR(64)
+
+Example
+-----------
+
+mysql> SELECT sys.extract_table_from_file_name('/var/lib/mysql/employees/employee.ibd');
++---------------------------------------------------------------------------+
+| sys.extract_table_from_file_name('/var/lib/mysql/employees/employee.ibd') |
++---------------------------------------------------------------------------+
+| employee                                                                  |
++---------------------------------------------------------------------------+
+1 row in set (0.02 sec)
+                                                                                                                                                                        | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| sys | format_bytes                     | FUNCTION | mysql.sys@localhost | 2022-12-19 13:50:17 | 2022-12-19 13:50:17 | INVOKER       | 
+Description
+-----------
+
+Takes a raw bytes value, and converts it to a human readable format.
+
+Parameters
+-----------
+
+bytes (TEXT):
+  A raw bytes value.
+
+Returns
+-----------
+
+TEXT
+
+Example
+-----------
+
+mysql> SELECT sys.format_bytes(2348723492723746) AS size;
++----------+
+| size     |
++----------+
+| 2.09 PiB |
++----------+
+1 row in set (0.00 sec)
+
+mysql> SELECT sys.format_bytes(2348723492723) AS size;
++----------+
+| size     |
++----------+
+| 2.14 TiB |
++----------+
+1 row in set (0.00 sec)
+
+mysql> SELECT sys.format_bytes(23487234) AS size;
++-----------+
+| size      |
++-----------+
+| 22.40 MiB |
++-----------+
+1 row in set (0.00 sec)
+                                                                                                                                                                                                                                                                                                                                                                                                | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| sys | format_path                      | FUNCTION | mysql.sys@localhost | 2022-12-19 13:50:17 | 2022-12-19 13:50:17 | INVOKER       | 
+Description
+-----------
+
+Takes a raw path value, and strips out the datadir or tmpdir
+replacing with @@datadir and @@tmpdir respectively.
+
+Also normalizes the paths across operating systems, so backslashes
+on Windows are converted to forward slashes
+
+Parameters
+-----------
+
+path (VARCHAR(512)):
+  The raw file path value to format.
+
+Returns
+-----------
+
+VARCHAR(512) CHARSET UTF8MB4
+
+Example
+-----------
+
+mysql> select @@datadir;
++-----------------------------------------------+
+| @@datadir                                     |
++-----------------------------------------------+
+| /Users/mark/sandboxes/SmallTree/AMaster/data/ |
++-----------------------------------------------+
+1 row in set (0.06 sec)
+
+mysql> select format_path('/Users/mark/sandboxes/SmallTree/AMaster/data/mysql/proc.MYD') AS path;
++--------------------------+
+| path                     |
++--------------------------+
+| @@datadir/mysql/proc.MYD |
++--------------------------+
+1 row in set (0.03 sec)
+                                                   | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| sys | format_statement                 | FUNCTION | mysql.sys@localhost | 2022-12-19 13:50:17 | 2022-12-19 13:50:17 | INVOKER       | 
+Description
+-----------
+
+Formats a normalized statement, truncating it if it is > 64 characters long by default.
+
+To configure the length to truncate the statement to by default, update the `statement_truncate_len`
+variable with `sys_config` table to a different value. Alternatively, to change it just for just 
+your particular session, use `SET @sys.statement_truncate_len := <some new value>`.
+
+Useful for printing statement related data from Performance Schema from 
+the command line.
+
+Parameters
+-----------
+
+statement (LONGTEXT): 
+  The statement to format.
+
+Returns
+-----------
+
+LONGTEXT
+
+Example
+-----------
+
+mysql> SELECT sys.format_statement(digest_text)
+    ->   FROM performance_schema.events_statements_summary_by_digest
+    ->  ORDER by sum_timer_wait DESC limit 5;
++-------------------------------------------------------------------+
+| sys.format_statement(digest_text)                                 |
++-------------------------------------------------------------------+
+| CREATE SQL SECURITY INVOKER VI ... KE ? AND `variable_value` > ?  |
+| CREATE SQL SECURITY INVOKER VI ... ait` IS NOT NULL , `esc` . ... |
+| CREATE SQL SECURITY INVOKER VI ... ait` IS NOT NULL , `sys` . ... |
+| CREATE SQL SECURITY INVOKER VI ...  , `compressed_size` ) ) DESC  |
+| CREATE SQL SECURITY INVOKER VI ... LIKE ? ORDER BY `timer_start`  |
++-------------------------------------------------------------------+
+5 rows in set (0.00 sec)
+ | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| sys | format_time                      | FUNCTION | mysql.sys@localhost | 2022-12-19 13:50:17 | 2022-12-19 13:50:17 | INVOKER       | 
+Description
+-----------
+
+Takes a raw picoseconds value, and converts it to a human readable form.
+
+Picoseconds are the precision that all latency values are printed in
+within Performance Schema, however are not user friendly when wanting
+to scan output from the command line.
+
+Parameters
+-----------
+
+picoseconds (TEXT):
+  The raw picoseconds value to convert.
+
+Returns
+-----------
+
+TEXT CHARSET UTF8MB4
+
+Example
+-----------
+
+mysql> select format_time(342342342342345);
++------------------------------+
+| format_time(342342342342345) |
++------------------------------+
+| 00:05:42                     |
++------------------------------+
+1 row in set (0.00 sec)
+
+mysql> select format_time(342342342);
++------------------------+
+| format_time(342342342) |
++------------------------+
+| 342.34 us              |
++------------------------+
+1 row in set (0.00 sec)
+
+mysql> select format_time(34234);
++--------------------+
+| format_time(34234) |
++--------------------+
+| 34.23 ns           |
++--------------------+
+1 row in set (0.00 sec)
+ | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| sys | list_add                         | FUNCTION | mysql.sys@localhost | 2022-12-19 13:50:17 | 2022-12-19 13:50:17 | INVOKER       | 
+Description
+-----------
+
+Takes a list, and a value to add to the list, and returns the resulting list.
+
+Useful for altering certain session variables, like sql_mode or optimizer_switch for instance.
+
+Parameters
+-----------
+
+in_list (TEXT):
+  The comma separated list to add a value to
+
+in_add_value (TEXT):
+  The value to add to the input list
+
+Returns
+-----------
+
+TEXT
+
+Example
+--------
+
+mysql> select @@sql_mode;
++-----------------------------------------------------------------------------------+
+| @@sql_mode                                                                        |
++-----------------------------------------------------------------------------------+
+| ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION |
++-----------------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> set sql_mode = sys.list_add(@@sql_mode, 'ANSI_QUOTES');
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> select @@sql_mode;
++-----------------------------------------------------------------------------------------------+
+| @@sql_mode                                                                                    |
++-----------------------------------------------------------------------------------------------+
+| ANSI_QUOTES,ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION |
++-----------------------------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+ | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| sys | list_drop                        | FUNCTION | mysql.sys@localhost | 2022-12-19 13:50:17 | 2022-12-19 13:50:17 | INVOKER       | 
+Description
+-----------
+
+Takes a list, and a value to attempt to remove from the list, and returns the resulting list.
+
+Useful for altering certain session variables, like sql_mode or optimizer_switch for instance.
+
+Parameters
+-----------
+
+in_list (TEXT):
+  The comma separated list to drop a value from
+
+in_drop_value (TEXT):
+  The value to drop from the input list
+
+Returns
+-----------
+
+TEXT
+
+Example
+--------
+
+mysql> select @@sql_mode;
++-----------------------------------------------------------------------------------------------+
+| @@sql_mode                                                                                    |
++-----------------------------------------------------------------------------------------------+
+| ANSI_QUOTES,ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION |
++-----------------------------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> set sql_mode = sys.list_drop(@@sql_mode, 'ONLY_FULL_GROUP_BY');
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> select @@sql_mode;
++----------------------------------------------------------------------------+
+| @@sql_mode                                                                 |
++----------------------------------------------------------------------------+
+| ANSI_QUOTES,STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION |
++----------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+ | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| sys | ps_is_account_enabled            | FUNCTION | mysql.sys@localhost | 2022-12-19 13:50:17 | 2022-12-19 13:50:17 | INVOKER       | 
+Description
+-----------
+
+Determines whether instrumentation of an account is enabled 
+within Performance Schema.
+
+Parameters
+-----------
+
+in_host VARCHAR(255): 
+  The hostname of the account to check.
+in_user VARCHAR(32):
+  The username of the account to check.
+
+Returns
+-----------
+
+ENUM('YES', 'NO', 'PARTIAL')
+
+Example
+-----------
+
+mysql> SELECT sys.ps_is_account_enabled('localhost', 'root');
++------------------------------------------------+
+| sys.ps_is_account_enabled('localhost', 'root') |
++------------------------------------------------+
+| YES                                            |
++------------------------------------------------+
+1 row in set (0.01 sec)
+                                                                                                                                                                                                                                                                                                                                                            | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| sys | ps_is_consumer_enabled           | FUNCTION | mysql.sys@localhost | 2022-12-19 13:50:17 | 2022-12-19 13:50:17 | INVOKER       | 
+Description
+-----------
+
+Determines whether a consumer is enabled (taking the consumer hierarchy into consideration)
+within the Performance Schema.
+
+An exception with errno 3047 is thrown if an unknown consumer name is passed to the function.
+A consumer name of NULL returns NULL.
+
+Parameters
+-----------
+
+in_consumer VARCHAR(64): 
+  The name of the consumer to check.
+
+Returns
+-----------
+
+ENUM('YES', 'NO')
+
+Example
+-----------
+
+mysql> SELECT sys.ps_is_consumer_enabled('events_stages_history');
++-----------------------------------------------------+
+| sys.ps_is_consumer_enabled('events_stages_history') |
++-----------------------------------------------------+
+| NO                                                  |
++-----------------------------------------------------+
+1 row in set (0.00 sec)
+                                                                                                                                                                                                                              | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| sys | ps_is_instrument_default_enabled | FUNCTION | mysql.sys@localhost | 2022-12-19 13:50:17 | 2022-12-19 13:50:17 | INVOKER       | 
+Description
+-----------
+
+Returns whether an instrument is enabled by default in this version of MySQL.
+
+Parameters
+-----------
+
+in_instrument VARCHAR(128): 
+  The instrument to check.
+
+Returns
+-----------
+
+ENUM('YES', 'NO')
+
+Example
+-----------
+
+mysql> SELECT sys.ps_is_instrument_default_enabled('statement/sql/select');
++--------------------------------------------------------------+
+| sys.ps_is_instrument_default_enabled('statement/sql/select') |
++--------------------------------------------------------------+
+| YES                                                          |
++--------------------------------------------------------------+
+1 row in set (0.00 sec)
+                                                                                                                                                                                                                                                                                                                                                                 | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| sys | ps_is_instrument_default_timed   | FUNCTION | mysql.sys@localhost | 2022-12-19 13:50:17 | 2022-12-19 13:50:17 | INVOKER       | 
+Description
+-----------
+
+Returns whether an instrument is timed by default in this version of MySQL.
+
+Parameters
+-----------
+
+in_instrument VARCHAR(128): 
+  The instrument to check.
+
+Returns
+-----------
+
+ENUM('YES', 'NO')
+
+Example
+-----------
+
+mysql> SELECT sys.ps_is_instrument_default_timed('statement/sql/select');
++------------------------------------------------------------+
+| sys.ps_is_instrument_default_timed('statement/sql/select') |
++------------------------------------------------------------+
+| YES                                                        |
++------------------------------------------------------------+
+1 row in set (0.00 sec)
+                                                                                                                                                                                                                                                                                                                                                                               | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| sys | ps_is_thread_instrumented        | FUNCTION | mysql.sys@localhost | 2022-12-19 13:50:17 | 2022-12-19 13:50:17 | INVOKER       | 
+Description
+-----------
+
+Checks whether the provided connection id is instrumented within Performance Schema.
+
+Parameters
+-----------
+
+in_connection_id (BIGINT UNSIGNED):
+  The id of the connection to check.
+
+Returns
+-----------
+
+ENUM('YES', 'NO', 'UNKNOWN')
+
+Example
+-----------
+
+mysql> SELECT sys.ps_is_thread_instrumented(CONNECTION_ID());
++------------------------------------------------+
+| sys.ps_is_thread_instrumented(CONNECTION_ID()) |
++------------------------------------------------+
+| YES                                            |
++------------------------------------------------+
+                                                                                                                                                                                                                                                                                                                                                                                                                                          | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| sys | ps_thread_account                | FUNCTION | mysql.sys@localhost | 2022-12-19 13:50:17 | 2022-12-19 13:50:17 | INVOKER       | 
+Description
+-----------
+
+Return the user@host account for the given Performance Schema thread id.
+
+Parameters
+-----------
+
+in_thread_id (BIGINT UNSIGNED):
+  The id of the thread to return the account for.
+
+Example
+-----------
+
+mysql> select thread_id, processlist_user, processlist_host from performance_schema.threads where type = 'foreground';
++-----------+------------------+------------------+
+| thread_id | processlist_user | processlist_host |
++-----------+------------------+------------------+
+|        23 | NULL             | NULL             |
+|        30 | root             | localhost        |
+|        31 | msandbox         | localhost        |
+|        32 | msandbox         | localhost        |
++-----------+------------------+------------------+
+4 rows in set (0.00 sec)
+
+mysql> select sys.ps_thread_account(31);
++---------------------------+
+| sys.ps_thread_account(31) |
++---------------------------+
+| msandbox@localhost        |
++---------------------------+
+1 row in set (0.00 sec)
+                     | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| sys | ps_thread_id                     | FUNCTION | mysql.sys@localhost | 2022-12-19 13:50:17 | 2022-12-19 13:50:17 | INVOKER       | 
+Description
+-----------
+
+Return the Performance Schema THREAD_ID for the specified connection ID.
+
+Parameters
+-----------
+
+in_connection_id (BIGINT UNSIGNED):
+  The id of the connection to return the thread id for. If NULL, the current
+  connection thread id is returned.
+
+Example
+-----------
+
+mysql> SELECT sys.ps_thread_id(79);
++----------------------+
+| sys.ps_thread_id(79) |
++----------------------+
+|                   98 |
++----------------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT sys.ps_thread_id(CONNECTION_ID());
++-----------------------------------+
+| sys.ps_thread_id(CONNECTION_ID()) |
++-----------------------------------+
+|                                98 |
++-----------------------------------+
+1 row in set (0.00 sec)
+                                                                                                                                                                                                                                                                                         | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| sys | ps_thread_stack                  | FUNCTION | mysql.sys@localhost | 2022-12-19 13:50:17 | 2022-12-19 13:50:17 | INVOKER       | 
+Description
+-----------
+
+Outputs a JSON formatted stack of all statements, stages and events
+within Performance Schema for the specified thread.
+
+Parameters
+-----------
+
+thd_id (BIGINT UNSIGNED):
+  The id of the thread to trace. This should match the thread_id
+  column from the performance_schema.threads table.
+in_verbose (BOOLEAN):
+  Include file:lineno information in the events.
+
+Example
+-----------
+
+(line separation added for output)
+
+mysql> SELECT sys.ps_thread_stack(37, FALSE) AS thread_stack\G
+*************************** 1. row ***************************
+thread_stack: {"rankdir": "LR","nodesep": "0.10","stack_created": "2014-02-19 13:39:03",
+"mysql_version": "5.7.3-m13","mysql_user": "root@localhost","events": 
+[{"nesting_event_id": "0", "event_id": "10", "timer_wait": 256.35, "event_info": 
+"sql/select", "wait_info": "select @@version_comment limit 1\nerrors: 0\nwarnings: 0\nlock time:
+...
+                                                                                                                 | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| sys | ps_thread_trx_info               | FUNCTION | mysql.sys@localhost | 2022-12-19 13:50:17 | 2022-12-19 13:50:17 | INVOKER       | 
+Description
+-----------
+
+Returns a JSON object with info on the given threads current transaction, 
+and the statements it has already executed, derived from the
+performance_schema.events_transactions_current and
+performance_schema.events_statements_history tables (so the consumers 
+for these also have to be enabled within Performance Schema to get full
+data in the object).
+
+When the output exceeds the default truncation length (65535), a JSON error
+object is returned, such as:
+
+{ "error": "Trx info truncated: Row 6 was cut by GROUP_CONCAT()" }
+
+Similar error objects are returned for other warnings/and exceptions raised
+when calling the function.
+
+The max length of the output of this function can be controlled with the
+ps_thread_trx_info.max_length variable set via sys_config, or the
+@sys.ps_thread_trx_info.max_length user variable, as appropriate.
+
+Parameters
+-----------
+
+in_thread_id (BIGINT UNSIGNED):
+  The id of the thread to return the transaction info for.
+
+Example
+-----------
+
+SELECT sys.ps_thread_trx_info(48)\G
+*************************** 1. row ***************************
+sys.ps_thread_trx_info(48): [
+  {
+    "time": "790.70 us",
+    "state": "COMMITTED",
+    "mode": "READ WRITE",
+    "autocommitted": "NO",
+    "gtid": "AUTOMATIC",
+    "isolation": "REPEATABLE READ",
+    "statements_executed": [
+      {
+        "sql_text": "INSERT INTO info VALUES (1, 'foo')",
+        "time": "471.02 us",
+        "schema": "trx",
+        "rows_examined": 0,
+        "rows_affected": 1,
+        "rows_sent": 0,
+        "tmp_tables": 0,
+        "tmp_disk_tables": 0,
+        "sort_rows": 0,
+        "sort_merge_passes": 0
+      },
+      {
+        "sql_text": "COMMIT",
+        "time": "254.42 us",
+        "schema": "trx",
+        "rows_examined": 0,
+        "rows_affected": 0,
+        "rows_sent": 0,
+        "tmp_tables": 0,
+        "tmp_disk_tables": 0,
+        "sort_rows": 0,
+        "sort_merge_passes": 0
+      }
+    ]
+  },
+  {
+    "time": "426.20 us",
+    "state": "COMMITTED",
+    "mode": "READ WRITE",
+    "autocommitted": "NO",
+    "gtid": "AUTOMATIC",
+    "isolation": "REPEATABLE READ",
+    "statements_executed": [
+      {
+        "sql_text": "INSERT INTO info VALUES (2, 'bar')",
+        "time": "107.33 us",
+        "schema": "trx",
+        "rows_examined": 0,
+        "rows_affected": 1,
+        "rows_sent": 0,
+        "tmp_tables": 0,
+        "tmp_disk_tables": 0,
+        "sort_rows": 0,
+        "sort_merge_passes": 0
+      },
+      {
+        "sql_text": "COMMIT",
+        "time": "213.23 us",
+        "schema": "trx",
+        "rows_examined": 0,
+        "rows_affected": 0,
+        "rows_sent": 0,
+        "tmp_tables": 0,
+        "tmp_disk_tables": 0,
+        "sort_rows": 0,
+        "sort_merge_passes": 0
+      }
+    ]
+  }
+]
+1 row in set (0.03 sec)
+ | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| sys | quote_identifier                 | FUNCTION | mysql.sys@localhost | 2022-12-19 13:50:17 | 2022-12-19 13:50:17 | INVOKER       | 
+Description
+-----------
+
+Takes an unquoted identifier (schema name, table name, etc.) and
+returns the identifier quoted with backticks.
+
+Parameters
+-----------
+
+in_identifier (TEXT):
+  The identifier to quote.
+
+Returns
+-----------
+
+TEXT CHARSET UTF8MB4
+
+Example
+-----------
+
+mysql> SELECT sys.quote_identifier('my_identifier') AS Identifier;
++-----------------+
+| Identifier      |
++-----------------+
+| `my_identifier` |
++-----------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT sys.quote_identifier('my`idenfier') AS Identifier;
++----------------+
+| Identifier     |
++----------------+
+| `my``idenfier` |
++----------------+
+1 row in set (0.00 sec)
+                                                                                                                                                                                                                                                                                                                                                                                     | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| sys | sys_get_config                   | FUNCTION | mysql.sys@localhost | 2022-12-19 13:50:17 | 2022-12-19 13:50:17 | INVOKER       | 
+Description
+-----------
+
+Returns the value for the requested variable using the following logic:
+
+   1. If the option exists in sys.sys_config return the value from there.
+   2. Else fall back on the provided default value.
+
+Notes for using sys_get_config():
+
+   * If the default value argument to sys_get_config() is NULL and case 2. is reached, NULL is returned.
+     It is then expected that the caller is able to handle NULL for the given configuration option.
+   * The convention is to name the user variables @sys.<name of variable>. It is <name of variable> that
+     is stored in the sys_config table and is what is expected as the argument to sys_get_config().
+   * If you want to check whether the configuration option has already been set and if not assign with
+     the return value of sys_get_config() you can use IFNULL(...) (see example below). However this should
+     not be done inside a loop (e.g. for each row in a result set) as for repeated calls where assignment
+     is only needed in the first iteration using IFNULL(...) is expected to be significantly slower than
+     using an IF (...) THEN ... END IF; block (see example below).
+
+Parameters
+-----------
+
+in_variable_name (VARCHAR(128)):
+  The name of the config option to return the value for.
+
+in_default_value (VARCHAR(128)):
+  The default value to return if the variable does not exist in sys.sys_config.
+
+Returns
+-----------
+
+VARCHAR(128)
+
+Example
+-----------
+
+-- Get the configuration value from sys.sys_config falling back on 128 if the option is not present in the table.
+mysql> SELECT sys.sys_get_config('statement_truncate_len', 128) AS Value;
++-------+
+| Value |
++-------+
+| 64    |
++-------+
+1 row in set (0.00 sec)
+
+-- Check whether the option is already set, if not assign - IFNULL(...) one liner example.
+mysql> SET @sys.statement_truncate_len = IFNULL(@sys.statement_truncate_len, sys.sys_get_config('statement_truncate_len', 64));
+Query OK, 0 rows affected (0.00 sec)
+
+-- Check whether the option is already set, if not assign - IF ... THEN ... END IF example.
+IF (@sys.statement_truncate_len IS NULL) THEN
+    SET @sys.statement_truncate_len = sys.sys_get_config('statement_truncate_len', 64);
+END IF;
+ | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| sys | version_major                    | FUNCTION | mysql.sys@localhost | 2022-12-19 13:50:17 | 2022-12-19 13:50:17 | INVOKER       | 
+Description
+-----------
+
+Returns the major version of MySQL Server.
+
+Returns
+-----------
+
+TINYINT UNSIGNED
+
+Example
+-----------
+
+mysql> SELECT VERSION(), sys.version_major();
++--------------------------------------+---------------------+
+| VERSION()                            | sys.version_major() |
++--------------------------------------+---------------------+
+| 5.7.9-enterprise-commercial-advanced | 5                   |
++--------------------------------------+---------------------+
+1 row in set (0.00 sec)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| sys | version_minor                    | FUNCTION | mysql.sys@localhost | 2022-12-19 13:50:17 | 2022-12-19 13:50:17 | INVOKER       | 
+Description
+-----------
+
+Returns the minor (release series) version of MySQL Server.
+
+Returns
+-----------
+
+TINYINT UNSIGNED
+
+Example
+-----------
+
+mysql> SELECT VERSION(), sys.server_minor();
++--------------------------------------+---------------------+
+| VERSION()                            | sys.version_minor() |
++--------------------------------------+---------------------+
+| 5.7.9-enterprise-commercial-advanced | 7                   |
++--------------------------------------+---------------------+
+1 row in set (0.00 sec)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| sys | version_patch                    | FUNCTION | mysql.sys@localhost | 2022-12-19 13:50:17 | 2022-12-19 13:50:17 | INVOKER       | 
+Description
+-----------
+
+Returns the patch release version of MySQL Server.
+
+Returns
+-----------
+
+TINYINT UNSIGNED
+
+Example
+-----------
+
+mysql> SELECT VERSION(), sys.version_patch();
++--------------------------------------+---------------------+
+| VERSION()                            | sys.version_patch() |
++--------------------------------------+---------------------+
+| 5.7.9-enterprise-commercial-advanced | 9                   |
++--------------------------------------+---------------------+
+1 row in set (0.00 sec)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
++-----+----------------------------------+----------+---------------------+---------------------+---------------------+---------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------+----------------------+--------------------+
+22 rows in set (0.00 sec)
+
+mysql> DELIMITER **
+mysql>  
+mysql> CREATE FUNCTION MovieCount(
+    ->     ActorID INT) 
+    -> RETURNS VARCHAR(50)
+    -> DETERMINISTIC
+    -> BEGIN
+    ->     DECLARE ReturnMessage VARCHAR(50);
+    ->     DECLARE Number INT DEFAULT 0;
+    ->     SELECT COUNT(*) INTO Number FROM Movies WHERE Id = ActorID;
+    ->  
+    ->     IF Number = 0 THEN
+    ->         SET ReturnMessage = 'The Actor does not have any Movies.';
+    ->     ELSE
+    ->         SET ReturnMessage = CONCAT('The Actor has ', Number, ' Movies');
+    ->     END IF;
+    ->     
+    ->     -- return the customer level
+    ->     RETURN (ReturnMessage);
+    -> END**
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> DELIMITER ;
+mysql> 
+mysql> SHOW FUNCTION STATUS
+    -> WHERE db = 'MovieIndustry';
++---------------+------------+----------+----------------+---------------------+---------------------+---------------+---------+----------------------+----------------------+--------------------+
+| Db            | Name       | Type     | Definer        | Modified            | Created             | Security_type | Comment | character_set_client | collation_connection | Database Collation |
++---------------+------------+----------+----------------+---------------------+---------------------+---------------+---------+----------------------+----------------------+--------------------+
+| MovieIndustry | MovieCount | FUNCTION | root@localhost | 2022-12-20 15:26:37 | 2022-12-20 15:26:37 | DEFINER       |         | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
++---------------+------------+----------+----------------+---------------------+---------------------+---------------+---------+----------------------+----------------------+--------------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT Id, MovieCount(Id) AS Count
+    -> FROM Actors;
++----+-------------------------------------+
+| Id | Count                               |
++----+-------------------------------------+
+|  1 | The Actor has 2 Movies              |
+|  2 | The Actor has 1 Movies              |
+|  3 | The Actor has 1 Movies              |
+|  4 | The Actor has 1 Movies              |
+|  5 | The Actor has 1 Movies              |
+|  6 | The Actor does not have any Movies. |
+|  7 | The Actor has 1 Movies              |
+|  8 | The Actor does not have any Movies. |
+|  9 | The Actor has 1 Movies              |
++----+-------------------------------------+
+9 rows in set (0.00 sec)
+
+mysql> SELECT concat(FirstName," ",LastName) as "Actor/Actress", MovieCount(Id) AS Count FROM Actors;
++------------------+-------------------------------------+
+| Actor/Actress    | Count                               |
++------------------+-------------------------------------+
+| Jennifer Aniston | The Actor has 2 Movies              |
+| Brad Pitt        | The Actor has 1 Movies              |
+| Angelina Jolie   | The Actor has 1 Movies              |
+| Dream Actress    | The Actor has 1 Movies              |
+| Johnny Depp      | The Actor has 1 Movies              |
+| Rishi Kapoor     | The Actor does not have any Movies. |
+| Rajni Kanth      | The Actor has 1 Movies              |
+| Hritik Roshan    | The Actor does not have any Movies. |
+| Madhuri Dixit    | The Actor has 1 Movies              |
++------------------+-------------------------------------+
+9 rows in set (0.00 sec)
+
+mysql> DELIMITER **
+mysql> CREATE PROCEDURE GetMovieCount(
+    ->     IN  ActorNo INT,  
+    ->     OUT Message VARCHAR(50))
+    -> BEGIN
+    ->     DECLARE Number INT DEFAULT 0;
+    ->     SET Number = ActorNo;    
+    ->     SET Message = MovieCount(Number);
+    -> END**
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER ;CALL GetMovieCount(10,@moviecount);
+mysql> SELECT @moviecount;
+    -> ;
+    -> ^C
+mysql> CALL GetMovieCount(10,@moviecount);
+    -> SELECT @moviecount;
+    -> ^C
+mysql> CALL GetMovieCount(10,@moviecount);
+    -> ^C
+mysql> 
+mysql> ^C
+mysql> 
+mysql> 
+mysql> show function status where db="MovieIndustry";
+    -> ^C
+mysql> exit
+Bye
+raja@shtlp0064:~$ mysql -u root -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 13
+Server version: 8.0.31-0ubuntu0.22.04.1 (Ubuntu)
+
+Copyright (c) 2000, 2022, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| MovieIndustry      |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+
+mysql> use MovieIndustry;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> show procedure status where db="MovieIndustry";
++---------------+-----------------+-----------+----------------+---------------------+---------------------+---------------+---------+----------------------+----------------------+--------------------+
+| Db            | Name            | Type      | Definer        | Modified            | Created             | Security_type | Comment | character_set_client | collation_connection | Database Collation |
++---------------+-----------------+-----------+----------------+---------------------+---------------------+---------------+---------+----------------------+----------------------+--------------------+
+| MovieIndustry | AddActor        | PROCEDURE | root@localhost | 2022-12-20 14:48:35 | 2022-12-20 14:48:35 | DEFINER       |         | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| MovieIndustry | GetMovieCount   | PROCEDURE | root@localhost | 2022-12-20 15:52:43 | 2022-12-20 15:52:43 | DEFINER       |         | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| MovieIndustry | InsertMovies    | PROCEDURE | root@localhost | 2022-12-20 13:46:40 | 2022-12-20 13:46:40 | DEFINER       |         | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| MovieIndustry | PrintMaleActors | PROCEDURE | root@localhost | 2022-12-20 12:44:42 | 2022-12-20 12:44:42 | DEFINER       |         | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| MovieIndustry | ShowActors      | PROCEDURE | root@localhost | 2022-12-20 12:17:30 | 2022-12-20 12:17:30 | DEFINER       |         | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| MovieIndustry | ShowMovies      | PROCEDURE | root@localhost | 2022-12-20 12:19:37 | 2022-12-20 12:19:37 | DEFINER       |         | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
++---------------+-----------------+-----------+----------------+---------------------+---------------------+---------------+---------+----------------------+----------------------+--------------------+
+6 rows in set (0.00 sec)
+
+mysql> show function status where db="MovieIndustry";
++---------------+------------+----------+----------------+---------------------+---------------------+---------------+---------+----------------------+----------------------+--------------------+
+| Db            | Name       | Type     | Definer        | Modified            | Created             | Security_type | Comment | character_set_client | collation_connection | Database Collation |
++---------------+------------+----------+----------------+---------------------+---------------------+---------------+---------+----------------------+----------------------+--------------------+
+| MovieIndustry | MovieCount | FUNCTION | root@localhost | 2022-12-20 15:26:37 | 2022-12-20 15:26:37 | DEFINER       |         | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
++---------------+------------+----------+----------------+---------------------+---------------------+---------------+---------+----------------------+----------------------+--------------------+
+1 row in set (0.00 sec)
+
+mysql> show table full  where table_type="VIEW";
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'full  where table_type="VIEW"' at line 1
+mysql> show tables full  where Table_type="VIEW";
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'full  where Table_type="VIEW"' at line 1
+mysql> show tables;
++-------------------------+
+| Tables_in_MovieIndustry |
++-------------------------+
+| Actors                  |
+| Movies                  |
++-------------------------+
+2 rows in set (0.00 sec)
+
+mysql> show tables full;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'full' at line 1
+mysql> show full tables;
++-------------------------+------------+
+| Tables_in_MovieIndustry | Table_type |
++-------------------------+------------+
+| Actors                  | BASE TABLE |
+| Movies                  | BASE TABLE |
++-------------------------+------------+
+2 rows in set (0.00 sec)
+
+mysql> show full tables where Table_type="VIEW";
+Empty set (0.01 sec)
+
+mysql> call ShowActors();
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Jennifer  | Aniston  | 1969-11-02 | Female | Single        |                240 |
+|  2 | Brad      | Pitt     | 1963-12-18 | Male   | Single        |                240 |
+|  3 | Angelina  | Jolie    | 1975-06-04 | Female | Single        |                100 |
+|  4 | Dream     | Actress  | 9999-01-01 | Female | Single        |                110 |
+|  5 | Johnny    | Depp     | 1963-06-09 | Male   | Single        |                200 |
+|  6 | Rishi     | Kapoor   | 1950-02-22 | Male   | Married       |                250 |
+|  7 | Rajni     | Kanth    | 1950-12-12 | Male   | Married       |                 50 |
+|  8 | Hritik    | Roshan   | 1950-02-22 | Male   | Married       |                220 |
+|  9 | Madhuri   | Dixit    | 1958-06-11 | Female | Married       |                180 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+9 rows in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> call ShowMovies();
++----------------------+--------------+----------------+----------------------------------+--------------+------+
+| Movie_Name           | Movie_Genera | Movie_Language | WorldWide_Collection_In_Millions | Release_Year | Id   |
++----------------------+--------------+----------------+----------------------------------+--------------+------+
+| Avenger:EndGame      | Sci-Fi       | Multiple       |                             1500 | 2016-06-05   |    2 |
+| Sholay               | Thriller     | Hindi          |                             2000 | 1979-08-12   |   10 |
+| 1920                 | Horror       | Hindi          |                              900 | 2021-08-23   |    4 |
+| Bajrangi Bhaijaan    | Adventure    | Hindi          |                             1200 | 2020-11-16   |    3 |
+| Aashiqui 2           | Romantic     | Hindi          |                              800 | 2014-06-10   |    9 |
+| BaahuBali            | Action       | Multiple       |                            12000 | 2019-04-06   |    1 |
+| Transformers         | Sci-Fi       | English        |                             1000 | 2018-10-15   |    1 |
+| RRR                  | Action       | Tamil          |                            15000 | 2019-12-12   |    7 |
+| Pirates of Caribbean | Adventure    | English        |                            10000 | 2017-05-26   |    5 |
++----------------------+--------------+----------------+----------------------------------+--------------+------+
+9 rows in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> show procedure status where db="MovieIndustry";
++---------------+-----------------+-----------+----------------+---------------------+---------------------+---------------+---------+----------------------+----------------------+--------------------+
+| Db            | Name            | Type      | Definer        | Modified            | Created             | Security_type | Comment | character_set_client | collation_connection | Database Collation |
++---------------+-----------------+-----------+----------------+---------------------+---------------------+---------------+---------+----------------------+----------------------+--------------------+
+| MovieIndustry | AddActor        | PROCEDURE | root@localhost | 2022-12-20 14:48:35 | 2022-12-20 14:48:35 | DEFINER       |         | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| MovieIndustry | GetMovieCount   | PROCEDURE | root@localhost | 2022-12-20 15:52:43 | 2022-12-20 15:52:43 | DEFINER       |         | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| MovieIndustry | InsertMovies    | PROCEDURE | root@localhost | 2022-12-20 13:46:40 | 2022-12-20 13:46:40 | DEFINER       |         | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| MovieIndustry | PrintMaleActors | PROCEDURE | root@localhost | 2022-12-20 12:44:42 | 2022-12-20 12:44:42 | DEFINER       |         | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| MovieIndustry | ShowActors      | PROCEDURE | root@localhost | 2022-12-20 12:17:30 | 2022-12-20 12:17:30 | DEFINER       |         | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| MovieIndustry | ShowMovies      | PROCEDURE | root@localhost | 2022-12-20 12:19:37 | 2022-12-20 12:19:37 | DEFINER       |         | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
++---------------+-----------------+-----------+----------------+---------------------+---------------------+---------------+---------+----------------------+----------------------+--------------------+
+6 rows in set (0.01 sec)
+
+mysql> show function status where db="MovieIndustry";
++---------------+------------+----------+----------------+---------------------+---------------------+---------------+---------+----------------------+----------------------+--------------------+
+| Db            | Name       | Type     | Definer        | Modified            | Created             | Security_type | Comment | character_set_client | collation_connection | Database Collation |
++---------------+------------+----------+----------------+---------------------+---------------------+---------------+---------+----------------------+----------------------+--------------------+
+| MovieIndustry | MovieCount | FUNCTION | root@localhost | 2022-12-20 15:26:37 | 2022-12-20 15:26:37 | DEFINER       |         | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
++---------------+------------+----------+----------------+---------------------+---------------------+---------------+---------+----------------------+----------------------+--------------------+
+1 row in set (0.00 sec)
+
+mysql> call ^C
+mysql> call GetMovieCount(9,@res);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select @res;
++------------------------+
+| @res                   |
++------------------------+
+| The Actor has 1 Movies |
++------------------------+
+1 row in set (0.00 sec)
+
+mysql> call GetMovieCount(10,@res);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select @res;
++------------------------+
+| @res                   |
++------------------------+
+| The Actor has 1 Movies |
++------------------------+
+1 row in set (0.00 sec)
+
+mysql> call GetMovieCount(10,@result);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select @result;
++------------------------+
+| @result                |
++------------------------+
+| The Actor has 1 Movies |
++------------------------+
+1 row in set (0.00 sec)
+
+mysql> show Movies;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'Movies' at line 1
+mysql> call ShowMovies();
++----------------------+--------------+----------------+----------------------------------+--------------+------+
+| Movie_Name           | Movie_Genera | Movie_Language | WorldWide_Collection_In_Millions | Release_Year | Id   |
++----------------------+--------------+----------------+----------------------------------+--------------+------+
+| Avenger:EndGame      | Sci-Fi       | Multiple       |                             1500 | 2016-06-05   |    2 |
+| Sholay               | Thriller     | Hindi          |                             2000 | 1979-08-12   |   10 |
+| 1920                 | Horror       | Hindi          |                              900 | 2021-08-23   |    4 |
+| Bajrangi Bhaijaan    | Adventure    | Hindi          |                             1200 | 2020-11-16   |    3 |
+| Aashiqui 2           | Romantic     | Hindi          |                              800 | 2014-06-10   |    9 |
+| BaahuBali            | Action       | Multiple       |                            12000 | 2019-04-06   |    1 |
+| Transformers         | Sci-Fi       | English        |                             1000 | 2018-10-15   |    1 |
+| RRR                  | Action       | Tamil          |                            15000 | 2019-12-12   |    7 |
+| Pirates of Caribbean | Adventure    | English        |                            10000 | 2017-05-26   |    5 |
++----------------------+--------------+----------------+----------------------------------+--------------+------+
+9 rows in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> SELECT concat(FirstName," ",LastName) as "Actor/Actress", MovieCount(Id) AS Count FROM Actors;
++------------------+-------------------------------------+
+| Actor/Actress    | Count                               |
++------------------+-------------------------------------+
+| Jennifer Aniston | The Actor has 2 Movies              |
+| Brad Pitt        | The Actor has 1 Movies              |
+| Angelina Jolie   | The Actor has 1 Movies              |
+| Dream Actress    | The Actor has 1 Movies              |
+| Johnny Depp      | The Actor has 1 Movies              |
+| Rishi Kapoor     | The Actor does not have any Movies. |
+| Rajni Kanth      | The Actor has 1 Movies              |
+| Hritik Roshan    | The Actor does not have any Movies. |
+| Madhuri Dixit    | The Actor has 1 Movies              |
++------------------+-------------------------------------+
+9 rows in set (0.00 sec)
+
+mysql> SELECT Id, concat(FirstName," ",LastName) as "Actor/Actress", MovieCount(Id) AS Count FROM Actors;
++----+------------------+-------------------------------------+
+| Id | Actor/Actress    | Count                               |
++----+------------------+-------------------------------------+
+|  1 | Jennifer Aniston | The Actor has 2 Movies              |
+|  2 | Brad Pitt        | The Actor has 1 Movies              |
+|  3 | Angelina Jolie   | The Actor has 1 Movies              |
+|  4 | Dream Actress    | The Actor has 1 Movies              |
+|  5 | Johnny Depp      | The Actor has 1 Movies              |
+|  6 | Rishi Kapoor     | The Actor does not have any Movies. |
+|  7 | Rajni Kanth      | The Actor has 1 Movies              |
+|  8 | Hritik Roshan    | The Actor does not have any Movies. |
+|  9 | Madhuri Dixit    | The Actor has 1 Movies              |
++----+------------------+-------------------------------------+
+9 rows in set (0.00 sec)
+
+mysql> call GetMovieCount(1,@result);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select @result;
++------------------------+
+| @result                |
++------------------------+
+| The Actor has 2 Movies |
++------------------------+
+1 row in set (0.00 sec)
+
+mysql> call GetMovieCount(10,@result);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select @result;
++------------------------+
+| @result                |
++------------------------+
+| The Actor has 1 Movies |
++------------------------+
+1 row in set (0.00 sec)
+
+mysql> call GetMovieCount(6,@result);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select @result;
++-------------------------------------+
+| @result                             |
++-------------------------------------+
+| The Actor does not have any Movies. |
++-------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> call GetMovieCount(66,@result);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select @result;
++-------------------------------------+
+| @result                             |
++-------------------------------------+
+| The Actor does not have any Movies. |
++-------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> call GetMovieCount(11,@result);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select @result;
++-------------------------------------+
+| @result                             |
++-------------------------------------+
+| The Actor does not have any Movies. |
++-------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> call GetMovieCount(1,@result);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select @result;
++------------------------+
+| @result                |
++------------------------+
+| The Actor has 2 Movies |
++------------------------+
+1 row in set (0.00 sec)
+
+mysql> call GetMovieCount(19,@result);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select @result;
++-------------------------------------+
+| @result                             |
++-------------------------------------+
+| The Actor does not have any Movies. |
++-------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> call GetMovieCount(2,@result);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select @result;
++------------------------+
+| @result                |
++------------------------+
+| The Actor has 1 Movies |
++------------------------+
+1 row in set (0.00 sec)
+
+mysql> call GetMovieCount(22,@result);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select @result;
++-------------------------------------+
+| @result                             |
++-------------------------------------+
+| The Actor does not have any Movies. |
++-------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> call GetMovieCount(10,@result);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select @result;
++------------------------+
+| @result                |
++------------------------+
+| The Actor has 1 Movies |
++------------------------+
+1 row in set (0.00 sec)
+
+mysql> select * from Actors where Id=10;
+Empty set (0.00 sec)
+
+mysql> select * from Actors;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Jennifer  | Aniston  | 1969-11-02 | Female | Single        |                240 |
+|  2 | Brad      | Pitt     | 1963-12-18 | Male   | Single        |                240 |
+|  3 | Angelina  | Jolie    | 1975-06-04 | Female | Single        |                100 |
+|  4 | Dream     | Actress  | 9999-01-01 | Female | Single        |                110 |
+|  5 | Johnny    | Depp     | 1963-06-09 | Male   | Single        |                200 |
+|  6 | Rishi     | Kapoor   | 1950-02-22 | Male   | Married       |                250 |
+|  7 | Rajni     | Kanth    | 1950-12-12 | Male   | Married       |                 50 |
+|  8 | Hritik    | Roshan   | 1950-02-22 | Male   | Married       |                220 |
+|  9 | Madhuri   | Dixit    | 1958-06-11 | Female | Married       |                180 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+9 rows in set (0.00 sec)
+
+mysql> call ShowActors();
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Jennifer  | Aniston  | 1969-11-02 | Female | Single        |                240 |
+|  2 | Brad      | Pitt     | 1963-12-18 | Male   | Single        |                240 |
+|  3 | Angelina  | Jolie    | 1975-06-04 | Female | Single        |                100 |
+|  4 | Dream     | Actress  | 9999-01-01 | Female | Single        |                110 |
+|  5 | Johnny    | Depp     | 1963-06-09 | Male   | Single        |                200 |
+|  6 | Rishi     | Kapoor   | 1950-02-22 | Male   | Married       |                250 |
+|  7 | Rajni     | Kanth    | 1950-12-12 | Male   | Married       |                 50 |
+|  8 | Hritik    | Roshan   | 1950-02-22 | Male   | Married       |                220 |
+|  9 | Madhuri   | Dixit    | 1958-06-11 | Female | Married       |                180 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+9 rows in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> call GetMovieCount(10,@result);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select @result;
++------------------------+
+| @result                |
++------------------------+
+| The Actor has 1 Movies |
++------------------------+
+1 row in set (0.00 sec)
+
+mysql> DELIMITER **
+mysql> CREATE FUNCTION TimeSinceBirth(
+    ->                 ActorID INT,
+    ->                 Asset VARCHAR(15)) 
+    -> RETURNS INT
+    -> NOT DETERMINISTIC
+    -> BEGIN
+    ->     DECLARE ElapsedTime INT;
+    ->     
+    ->     SELECT TIMESTAMPDIFF(SECOND, LastUpdatedOn, NOW())
+    ->     INTO ElapsedTime
+    ->     FROM Actors
+    ->     WHERE Id = ActorID;
+    -> 
+    ->     RETURN ElapsedTime;
+    -> END**
+ERROR 1418 (HY000): This function has none of DETERMINISTIC, NO SQL, or READS SQL DATA in its declaration and binary logging is enabled (you *might* want to use the less safe log_bin_trust_function_creators variable)
+mysql> DELIMITER ;
+mysql> 
+mysql> DELIMITER **
+mysql> CREATE FUNCTION TimeSinceBirth(
+    ->                 ActorID INT,
+    ->                 Asset VARCHAR(15)) 
+    -> RETURNS INT
+    -> NOT DETERMINISTIC
+    -> BEGIN
+    ->     DECLARE ElapsedTime INT;
+    ->     
+    ->     SELECT TIMESTAMPDIFF(SECOND, DoB, NOW())
+    ->     INTO ElapsedTime
+    ->     FROM Actors
+    ->     WHERE Id = ActorID;
+    -> 
+    ->     RETURN ElapsedTime;
+    -> END**
+ERROR 1418 (HY000): This function has none of DETERMINISTIC, NO SQL, or READS SQL DATA in its declaration and binary logging is enabled (you *might* want to use the less safe log_bin_trust_function_creators variable)
+mysql> DELIMITER ;
+mysql> 
+mysql> DELIMITER **
+mysql> CREATE FUNCTION TimeSinceBirth(
+    ->                 ActorID INT,
+    ->                 Asset VARCHAR(15)) 
+    -> RETURNS INT
+    -> NOT DETERMINISTIC
+    -> BEGIN
+    ->     DECLARE ElapsedTime INT;
+    ->     
+    ->     SELECT TIMESTAMPDIFF(YEAR, DoB, NOW())
+    ->     INTO ElapsedTime
+    ->     FROM Actors
+    ->     WHERE Id = ActorID;
+    -> 
+    ->     RETURN ElapsedTime;
+    -> END**
+ERROR 1418 (HY000): This function has none of DETERMINISTIC, NO SQL, or READS SQL DATA in its declaration and binary logging is enabled (you *might* want to use the less safe log_bin_trust_function_creators variable)
+mysql> DELIMITER ;
+mysql> 
+mysql> 
+mysql> SELECT routine_name
+    -> FROM information_schema.routines
+    -> WHERE routine_type = 'FUNCTION' AND routine_schema = 'MovieIndustry';
++--------------+
+| ROUTINE_NAME |
++--------------+
+| MovieCount   |
++--------------+
+1 row in set (0.00 sec)
+
+mysql> DELIMITER **
+mysql> CREATE FUNCTION TimeSinceBirth(
+    ->                 ActorID INT,
+    -> RETURNS INT
+    -> NOT DETERMINISTIC
+    -> BEGIN
+    ->     DECLARE ElapsedTime INT;
+    ->     
+    ->     SELECT TIMESTAMPDIFF(SECOND, DoB, NOW())
+    ->     INTO ElapsedTime
+    ->     FROM Actors
+    ->     WHERE Id = ActorID;
+    -> 
+    ->     RETURN ElapsedTime;
+    -> END**
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'NOT DETERMINISTIC
+BEGIN
+    DECLARE ElapsedTime INT;
+    
+    SELECT TIMESTAMPDI' at line 4
+mysql> DELIMITER ;
+mysql> DELIMITER **
+mysql> CREATE FUNCTION TimeSinceBirth(
+    ->                 ActorID INT)
+    -> RETURNS INT
+    -> NOT DETERMINISTIC
+    -> BEGIN
+    ->     DECLARE ElapsedTime INT;
+    ->     
+    ->     SELECT TIMESTAMPDIFF(SECOND, DoB, NOW())
+    ->     INTO ElapsedTime
+    ->     FROM Actors
+    ->     WHERE Id = ActorID;
+    -> 
+    ->     RETURN ElapsedTime;
+    -> END**
+ERROR 1418 (HY000): This function has none of DETERMINISTIC, NO SQL, or READS SQL DATA in its declaration and binary logging is enabled (you *might* want to use the less safe log_bin_trust_function_creators variable)
+mysql> DELIMITER ;
+mysql> 
+mysql> 
+mysql> 
+mysql> 
+mysql> 
+mysql> 
+mysql> 
+mysql> DELIMITER **
+mysql> CREATE FUNCTION TimeSinceBirth(
+    ->                 ActorID INT)
+    -> RETURNS INT
+    -> NOT DETERMINISTIC
+    -> BEGIN
+    ->     DECLARE ElapsedTime INT;
+    ->     
+    ->     SELECT TIMESTAMPDIFF(SECOND, DoB, NOW())
+    ->     INTO ElapsedTime
+    ->     FROM Actors
+    ->     WHERE Id = ActorID;
+    -> 
+    ->     RETURN ElapsedTime;
+    -> END**
+ERROR 1418 (HY000): This function has none of DETERMINISTIC, NO SQL, or READS SQL DATA in its declaration and binary logging is enabled (you *might* want to use the less safe log_bin_trust_function_creators variable)
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
