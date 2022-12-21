@@ -14243,4 +14243,210 @@ mysql> SELECT
 | UpdateMaritalStatusSummary |            3 |
 +----------------------------+--------------+
 8 rows in set (0.00 sec)
------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------TRANSACTION---------------------------------------------------------------------
+mysql> select * from Actors;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Jennifer  | Aniston  | 1969-11-02 | Female | Single        |                240 |
+|  2 | Brad      | Pitt     | 1963-12-18 | Male   | Single        |                240 |
+|  3 | Angelina  | Jolie    | 1975-06-04 | Female | Single        |                100 |
+|  4 | Dream     | Actress  | 9999-01-01 | Female | Divorced      |                110 |
+|  5 | Johnny    | Depp     | 1963-06-09 | Male   | Single        |                100 |
+|  6 | Rishi     | Kapoor   | 1950-02-22 | Male   | Married       |                250 |
+|  8 | Hritik    | Roshan   | 1950-02-22 | Male   | Married       |                220 |
+|  9 | Madhuri   | Dixit    | 1958-06-11 | Female | Married       |                180 |
+| 10 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
+| 14 | Matt      | Damon    | 1970-10-08 | Male   | Married       |                160 |
+| 15 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+11 rows in set (0.00 sec)
+
+mysql> START TRANSACTION;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> UPDATE Actors 
+    -> SET Id = 100 
+    -> WHERE FirstName = "Brad";
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from Actors;
++-----+-----------+----------+------------+--------+---------------+--------------------+
+| Id  | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++-----+-----------+----------+------------+--------+---------------+--------------------+
+|   1 | Jennifer  | Aniston  | 1969-11-02 | Female | Single        |                240 |
+|   3 | Angelina  | Jolie    | 1975-06-04 | Female | Single        |                100 |
+|   4 | Dream     | Actress  | 9999-01-01 | Female | Divorced      |                110 |
+|   5 | Johnny    | Depp     | 1963-06-09 | Male   | Single        |                100 |
+|   6 | Rishi     | Kapoor   | 1950-02-22 | Male   | Married       |                250 |
+|   8 | Hritik    | Roshan   | 1950-02-22 | Male   | Married       |                220 |
+|   9 | Madhuri   | Dixit    | 1958-06-11 | Female | Married       |                180 |
+|  10 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
+|  14 | Matt      | Damon    | 1970-10-08 | Male   | Married       |                160 |
+|  15 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
+| 100 | Brad      | Pitt     | 1963-12-18 | Male   | Single        |                240 |
++-----+-----------+----------+------------+--------+---------------+--------------------+
+11 rows in set (0.00 sec)
+
+mysql> Rollback;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from Actors;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Jennifer  | Aniston  | 1969-11-02 | Female | Single        |                240 |
+|  2 | Brad      | Pitt     | 1963-12-18 | Male   | Single        |                240 |
+|  3 | Angelina  | Jolie    | 1975-06-04 | Female | Single        |                100 |
+|  4 | Dream     | Actress  | 9999-01-01 | Female | Divorced      |                110 |
+|  5 | Johnny    | Depp     | 1963-06-09 | Male   | Single        |                100 |
+|  6 | Rishi     | Kapoor   | 1950-02-22 | Male   | Married       |                250 |
+|  8 | Hritik    | Roshan   | 1950-02-22 | Male   | Married       |                220 |
+|  9 | Madhuri   | Dixit    | 1958-06-11 | Female | Married       |                180 |
+| 10 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
+| 14 | Matt      | Damon    | 1970-10-08 | Male   | Married       |                160 |
+| 15 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+11 rows in set (0.00 sec)
+
+mysql> show Engines;
++--------------------+---------+----------------------------------------------------------------+--------------+------+------------+
+| Engine             | Support | Comment                                                        | Transactions | XA   | Savepoints |
++--------------------+---------+----------------------------------------------------------------+--------------+------+------------+
+| ARCHIVE            | YES     | Archive storage engine                                         | NO           | NO   | NO         |
+| BLACKHOLE          | YES     | /dev/null storage engine (anything you write to it disappears) | NO           | NO   | NO         |
+| MRG_MYISAM         | YES     | Collection of identical MyISAM tables                          | NO           | NO   | NO         |
+| FEDERATED          | NO      | Federated MySQL storage engine                                 | NULL         | NULL | NULL       |
+| MyISAM             | YES     | MyISAM storage engine                                          | NO           | NO   | NO         |
+| PERFORMANCE_SCHEMA | YES     | Performance Schema                                             | NO           | NO   | NO         |
+| InnoDB             | DEFAULT | Supports transactions, row-level locking, and foreign keys     | YES          | YES  | YES        |
+| MEMORY             | YES     | Hash based, stored in memory, useful for temporary tables      | NO           | NO   | NO         |
+| CSV                | YES     | CSV storage engine                                             | NO           | NO   | NO         |
++--------------------+---------+----------------------------------------------------------------+--------------+------+------------+
+9 rows in set (0.00 sec)
+
+mysql> explain select * from Actors;
++----+-------------+--------+------------+------+---------------+------+---------+------+------+----------+-------+
+| id | select_type | table  | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra |
++----+-------------+--------+------------+------+---------------+------+---------+------+------+----------+-------+
+|  1 | SIMPLE      | Actors | NULL       | ALL  | NULL          | NULL | NULL    | NULL |   12 |   100.00 | NULL  |
++----+-------------+--------+------------+------+---------------+------+---------+------+------+----------+-------+
+1 row in set, 1 warning (0.01 sec)
+
+mysql> desc select * from Actors;
++----+-------------+--------+------------+------+---------------+------+---------+------+------+----------+-------+
+| id | select_type | table  | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra |
++----+-------------+--------+------------+------+---------------+------+---------+------+------+----------+-------+
+|  1 | SIMPLE      | Actors | NULL       | ALL  | NULL          | NULL | NULL    | NULL |   12 |   100.00 | NULL  |
++----+-------------+--------+------------+------+---------------+------+---------+------+------+----------+-------+
+1 row in set, 1 warning (0.00 sec)
+
+mysql> EXPLAIN
+    -> SELECT * 
+    -> FROM Actors INNER JOIN Movies
+    -> using(Id);
++----+-------------+--------+------------+--------+---------------+---------+---------+-------------------------+------+----------+-------------+
+| id | select_type | table  | partitions | type   | possible_keys | key     | key_len | ref                     | rows | filtered | Extra       |
++----+-------------+--------+------------+--------+---------------+---------+---------+-------------------------+------+----------+-------------+
+|  1 | SIMPLE      | Movies | NULL       | ALL    | NULL          | NULL    | NULL    | NULL                    |    9 |   100.00 | Using where |
+|  1 | SIMPLE      | Actors | NULL       | eq_ref | PRIMARY       | PRIMARY | 4       | MovieIndustry.Movies.Id |    1 |   100.00 | NULL        |
++----+-------------+--------+------------+--------+---------------+---------+---------+-------------------------+------+----------+-------------+
+2 rows in set, 1 warning (0.00 sec)
+
+mysql> ALTER TABLE Movies
+    -> ADD FOREIGN KEY (ActorId)
+    -> REFERENCES Actors(Id);
+ERROR 1072 (42000): Key column 'ActorId' doesn't exist in table
+mysql> Select * from Actors;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Jennifer  | Aniston  | 1969-11-02 | Female | Single        |                240 |
+|  2 | Brad      | Pitt     | 1963-12-18 | Male   | Single        |                240 |
+|  3 | Angelina  | Jolie    | 1975-06-04 | Female | Single        |                100 |
+|  4 | Dream     | Actress  | 9999-01-01 | Female | Divorced      |                110 |
+|  5 | Johnny    | Depp     | 1963-06-09 | Male   | Single        |                100 |
+|  6 | Rishi     | Kapoor   | 1950-02-22 | Male   | Married       |                250 |
+|  8 | Hritik    | Roshan   | 1950-02-22 | Male   | Married       |                220 |
+|  9 | Madhuri   | Dixit    | 1958-06-11 | Female | Married       |                180 |
+| 10 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
+| 14 | Matt      | Damon    | 1970-10-08 | Male   | Married       |                160 |
+| 15 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+11 rows in set (0.00 sec)
+
+mysql> Select * from Movies;
++----------------------+--------------+----------------+----------------------------------+--------------+------+
+| Movie_Name           | Movie_Genera | Movie_Language | WorldWide_Collection_In_Millions | Release_Year | Id   |
++----------------------+--------------+----------------+----------------------------------+--------------+------+
+| Avenger:EndGame      | Sci-Fi       | Multiple       |                             1500 | 2016-06-05   |    2 |
+| Sholay               | Thriller     | Hindi          |                             2000 | 1979-08-12   |   10 |
+| 1920                 | Horror       | Hindi          |                              900 | 2021-08-23   |    4 |
+| Bajrangi Bhaijaan    | Adventure    | Hindi          |                             1200 | 2020-11-16   |    3 |
+| Aashiqui 2           | Romantic     | Hindi          |                              800 | 2014-06-10   |    9 |
+| BaahuBali            | Action       | Multiple       |                            12000 | 2019-04-06   |    1 |
+| Transformers         | Sci-Fi       | English        |                             1000 | 2018-10-15   |    1 |
+| RRR                  | Action       | Tamil          |                            15000 | 2019-12-12   |    7 |
+| Pirates of Caribbean | Adventure    | English        |                            10000 | 2017-05-26   |    5 |
++----------------------+--------------+----------------+----------------------------------+--------------+------+
+9 rows in set (0.00 sec)
+
+mysql> alter table Movies rename column Id ActorId;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'ActorId' at line 1
+mysql> alter table Movies rename column Id To ActorId;
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> Select * from Movies;
++----------------------+--------------+----------------+----------------------------------+--------------+---------+
+| Movie_Name           | Movie_Genera | Movie_Language | WorldWide_Collection_In_Millions | Release_Year | ActorId |
++----------------------+--------------+----------------+----------------------------------+--------------+---------+
+| Avenger:EndGame      | Sci-Fi       | Multiple       |                             1500 | 2016-06-05   |       2 |
+| Sholay               | Thriller     | Hindi          |                             2000 | 1979-08-12   |      10 |
+| 1920                 | Horror       | Hindi          |                              900 | 2021-08-23   |       4 |
+| Bajrangi Bhaijaan    | Adventure    | Hindi          |                             1200 | 2020-11-16   |       3 |
+| Aashiqui 2           | Romantic     | Hindi          |                              800 | 2014-06-10   |       9 |
+| BaahuBali            | Action       | Multiple       |                            12000 | 2019-04-06   |       1 |
+| Transformers         | Sci-Fi       | English        |                             1000 | 2018-10-15   |       1 |
+| RRR                  | Action       | Tamil          |                            15000 | 2019-12-12   |       7 |
+| Pirates of Caribbean | Adventure    | English        |                            10000 | 2017-05-26   |       5 |
++----------------------+--------------+----------------+----------------------------------+--------------+---------+
+9 rows in set (0.00 sec)
+
+mysql> ALTER TABLE DigitalAssets
+    -> ADD FOREIGN KEY (ActorId)
+    -> REFERENCES Actors(Id);
+ERROR 1146 (42S02): Table 'MovieIndustry.DigitalAssets' doesn't exist
+mysql> ALTER TABLE Movies ADD FOREIGN KEY (ActorId) REFERENCES Actors(Id);
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`MovieIndustry`.`#sql-4188_f`, CONSTRAINT `Movies_ibfk_1` FOREIGN KEY (`ActorId`) REFERENCES `Actors` (`Id`))
+mysql> desc Actors;
++--------------------+-----------------------------------------------+------+-----+---------+----------------+
+| Field              | Type                                          | Null | Key | Default | Extra          |
++--------------------+-----------------------------------------------+------+-----+---------+----------------+
+| Id                 | int                                           | NO   | PRI | NULL    | auto_increment |
+| FirstName          | varchar(20)                                   | NO   |     | NULL    |                |
+| LastName           | varchar(120)                                  | YES  |     | NULL    |                |
+| DoB                | date                                          | NO   |     | NULL    |                |
+| Gender             | enum('Male','Female','Other')                 | NO   |     | NULL    |                |
+| MaritalStatus      | enum('Married','Divorced','Single','Unknown') | YES  |     | NULL    |                |
+| NetWorthInMillions | decimal(10,0)                                 | NO   |     | NULL    |                |
++--------------------+-----------------------------------------------+------+-----+---------+----------------+
+7 rows in set (0.00 sec)
+
+mysql> desc Movies;
++----------------------------------+--------------------------------------------------------------------+------+-----+---------+-------+
+| Field                            | Type                                                               | Null | Key | Default | Extra |
++----------------------------------+--------------------------------------------------------------------+------+-----+---------+-------+
+| Movie_Name                       | varchar(120)                                                       | YES  |     | NULL    |       |
+| Movie_Genera                     | enum('Action','Adventure','Romantic','Horror','Sci-Fi','Thriller') | YES  |     | NULL    |       |
+| Movie_Language                   | varchar(20)                                                        | YES  |     | NULL    |       |
+| WorldWide_Collection_In_Millions | decimal(10,0)                                                      | YES  |     | NULL    |       |
+| Release_Year                     | date                                                               | YES  |     | NULL    |       |
+| ActorId                          | int                                                                | YES  |     | NULL    |       |
++----------------------------------+--------------------------------------------------------------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+mysql> alter table Movies add foreign key (ActorId) references Actors(Id);
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`MovieIndustry`.`#sql-4188_f`, CONSTRAINT `Movies_ibfk_1` FOREIGN KEY (`ActorId`) REFERENCES `Actors` (`Id`))
+mysql> 
