@@ -12711,3 +12711,1536 @@ mysql> CREATE FUNCTION TimeSinceBirth(
     -> END**
 ERROR 1418 (HY000): This function has none of DETERMINISTIC, NO SQL, or READS SQL DATA in its declaration and binary logging is enabled (you *might* want to use the less safe log_bin_trust_function_creators variable)
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
+mysql> ----------------------------------------------------------------------------------------------------------- TRIGGERS --------------------------------------------------------------------------------
+    -> ;
+    -> ^C
+mysql> DELIMITER **
+mysql> CREATE TRIGGER NetWorthCheck
+    -> BEFORE INSERT ON Actors
+    -> FOR EACH ROW 
+    ->   IF  NEW.NetWorthInMillions < 0 OR NEW.NetWorthInMillions IS NULL
+    ->   THEN SET New.NetWorthInMillions = 0;
+    ->   END IF;
+    -> **
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> DELIMITER ;SHOW TRIGGERS;
+mysql> SHOW TRIGGERS;
+    -> ^C
+mysql> exit
+Bye
+raja@shtlp0064:~$ mysql -u root -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 14
+Server version: 8.0.31-0ubuntu0.22.04.1 (Ubuntu)
+
+Copyright (c) 2000, 2022, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| MovieIndustry      |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.01 sec)
+
+mysql> use MovieIndutry;
+ERROR 1049 (42000): Unknown database 'MovieIndutry'
+mysql> use MovieIndustry;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> show full tables;
++-------------------------+------------+
+| Tables_in_MovieIndustry | Table_type |
++-------------------------+------------+
+| Actors                  | BASE TABLE |
+| Movies                  | BASE TABLE |
++-------------------------+------------+
+2 rows in set (0.00 sec)
+
+mysql> show procedure status where db="MovieIndustry";
++---------------+-----------------+-----------+----------------+---------------------+---------------------+---------------+---------+----------------------+----------------------+--------------------+
+| Db            | Name            | Type      | Definer        | Modified            | Created             | Security_type | Comment | character_set_client | collation_connection | Database Collation |
++---------------+-----------------+-----------+----------------+---------------------+---------------------+---------------+---------+----------------------+----------------------+--------------------+
+| MovieIndustry | AddActor        | PROCEDURE | root@localhost | 2022-12-20 14:48:35 | 2022-12-20 14:48:35 | DEFINER       |         | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| MovieIndustry | GetMovieCount   | PROCEDURE | root@localhost | 2022-12-20 15:52:43 | 2022-12-20 15:52:43 | DEFINER       |         | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| MovieIndustry | InsertMovies    | PROCEDURE | root@localhost | 2022-12-20 13:46:40 | 2022-12-20 13:46:40 | DEFINER       |         | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| MovieIndustry | PrintMaleActors | PROCEDURE | root@localhost | 2022-12-20 12:44:42 | 2022-12-20 12:44:42 | DEFINER       |         | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| MovieIndustry | ShowActors      | PROCEDURE | root@localhost | 2022-12-20 12:17:30 | 2022-12-20 12:17:30 | DEFINER       |         | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| MovieIndustry | ShowMovies      | PROCEDURE | root@localhost | 2022-12-20 12:19:37 | 2022-12-20 12:19:37 | DEFINER       |         | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
++---------------+-----------------+-----------+----------------+---------------------+---------------------+---------------+---------+----------------------+----------------------+--------------------+
+6 rows in set (0.01 sec)
+
+mysql> show function status where db="MovieIndustry";
++---------------+------------+----------+----------------+---------------------+---------------------+---------------+---------+----------------------+----------------------+--------------------+
+| Db            | Name       | Type     | Definer        | Modified            | Created             | Security_type | Comment | character_set_client | collation_connection | Database Collation |
++---------------+------------+----------+----------------+---------------------+---------------------+---------------+---------+----------------------+----------------------+--------------------+
+| MovieIndustry | MovieCount | FUNCTION | root@localhost | 2022-12-20 15:26:37 | 2022-12-20 15:26:37 | DEFINER       |         | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
++---------------+------------+----------+----------------+---------------------+---------------------+---------------+---------+----------------------+----------------------+--------------------+
+1 row in set (0.00 sec)
+
+mysql> show full tables where Table_Type="View";;
+Empty set (0.00 sec)
+
+ERROR: 
+No query specified
+
+mysql> call ShowActors();
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Jennifer  | Aniston  | 1969-11-02 | Female | Single        |                240 |
+|  2 | Brad      | Pitt     | 1963-12-18 | Male   | Single        |                240 |
+|  3 | Angelina  | Jolie    | 1975-06-04 | Female | Single        |                100 |
+|  4 | Dream     | Actress  | 9999-01-01 | Female | Single        |                110 |
+|  5 | Johnny    | Depp     | 1963-06-09 | Male   | Single        |                200 |
+|  6 | Rishi     | Kapoor   | 1950-02-22 | Male   | Married       |                250 |
+|  7 | Rajni     | Kanth    | 1950-12-12 | Male   | Married       |                 50 |
+|  8 | Hritik    | Roshan   | 1950-02-22 | Male   | Married       |                220 |
+|  9 | Madhuri   | Dixit    | 1958-06-11 | Female | Married       |                180 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+9 rows in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> call ShowMovies();
++----------------------+--------------+----------------+----------------------------------+--------------+------+
+| Movie_Name           | Movie_Genera | Movie_Language | WorldWide_Collection_In_Millions | Release_Year | Id   |
++----------------------+--------------+----------------+----------------------------------+--------------+------+
+| Avenger:EndGame      | Sci-Fi       | Multiple       |                             1500 | 2016-06-05   |    2 |
+| Sholay               | Thriller     | Hindi          |                             2000 | 1979-08-12   |   10 |
+| 1920                 | Horror       | Hindi          |                              900 | 2021-08-23   |    4 |
+| Bajrangi Bhaijaan    | Adventure    | Hindi          |                             1200 | 2020-11-16   |    3 |
+| Aashiqui 2           | Romantic     | Hindi          |                              800 | 2014-06-10   |    9 |
+| BaahuBali            | Action       | Multiple       |                            12000 | 2019-04-06   |    1 |
+| Transformers         | Sci-Fi       | English        |                             1000 | 2018-10-15   |    1 |
+| RRR                  | Action       | Tamil          |                            15000 | 2019-12-12   |    7 |
+| Pirates of Caribbean | Adventure    | English        |                            10000 | 2017-05-26   |    5 |
++----------------------+--------------+----------------+----------------------------------+--------------+------+
+9 rows in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> DELIMITER **
+mysql> CREATE TRIGGER NetWorthCheck
+    -> BEFORE INSERT ON Actors
+    -> FOR EACH ROW 
+    ->   IF  NEW.NetWorthInMillions < 0 OR NEW.NetWorthInMillions IS NULL
+    ->   THEN SET New.NetWorthInMillions = 0;
+    ->   END IF;
+    -> **
+ERROR 1359 (HY000): Trigger already exists
+mysql> DELIMITER ;
+mysql> 
+mysql> show triggers;
++---------------+--------+--------+------------------------------------------------------------------------------------------------------------------+--------+------------------------+-----------------------------------------------------------------------------------------------------------------------+----------------+----------------------+----------------------+--------------------+
+| Trigger       | Event  | Table  | Statement                                                                                                        | Timing | Created                | sql_mode                                                                                                              | Definer        | character_set_client | collation_connection | Database Collation |
++---------------+--------+--------+------------------------------------------------------------------------------------------------------------------+--------+------------------------+-----------------------------------------------------------------------------------------------------------------------+----------------+----------------------+----------------------+--------------------+
+| NetWorthCheck | INSERT | Actors | IF  NEW.NetWorthInMillions < 0 OR NEW.NetWorthInMillions IS NULL
+  THEN SET New.NetWorthInMillions = 0;
+  END IF | BEFORE | 2022-12-21 09:58:23.12 | ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION | root@localhost | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
++---------------+--------+--------+------------------------------------------------------------------------------------------------------------------+--------+------------------------+-----------------------------------------------------------------------------------------------------------------------+----------------+----------------------+----------------------+--------------------+
+1 row in set (0.00 sec)
+
+mysql> INSERT INTO Actors (FirstName, LastName, DoB, Gender, MaritalStatus,  NetWorthInMillions) VALUES ('Tom', 'Hanks', '1956-07-09', 'Male', 'Married', 350);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> call ShowActors();
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Jennifer  | Aniston  | 1969-11-02 | Female | Single        |                240 |
+|  2 | Brad      | Pitt     | 1963-12-18 | Male   | Single        |                240 |
+|  3 | Angelina  | Jolie    | 1975-06-04 | Female | Single        |                100 |
+|  4 | Dream     | Actress  | 9999-01-01 | Female | Single        |                110 |
+|  5 | Johnny    | Depp     | 1963-06-09 | Male   | Single        |                200 |
+|  6 | Rishi     | Kapoor   | 1950-02-22 | Male   | Married       |                250 |
+|  7 | Rajni     | Kanth    | 1950-12-12 | Male   | Married       |                 50 |
+|  8 | Hritik    | Roshan   | 1950-02-22 | Male   | Married       |                220 |
+|  9 | Madhuri   | Dixit    | 1958-06-11 | Female | Married       |                180 |
+| 10 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+10 rows in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> INSERT INTO Actors (FirstName, LastName, DoB, Gender, MaritalStatus, NetWorthInMillions) VALUES ('Young', 'Actor', '2000-03-25', 'Male', 'Single', NULL);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> call ShowActors();
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Jennifer  | Aniston  | 1969-11-02 | Female | Single        |                240 |
+|  2 | Brad      | Pitt     | 1963-12-18 | Male   | Single        |                240 |
+|  3 | Angelina  | Jolie    | 1975-06-04 | Female | Single        |                100 |
+|  4 | Dream     | Actress  | 9999-01-01 | Female | Single        |                110 |
+|  5 | Johnny    | Depp     | 1963-06-09 | Male   | Single        |                200 |
+|  6 | Rishi     | Kapoor   | 1950-02-22 | Male   | Married       |                250 |
+|  7 | Rajni     | Kanth    | 1950-12-12 | Male   | Married       |                 50 |
+|  8 | Hritik    | Roshan   | 1950-02-22 | Male   | Married       |                220 |
+|  9 | Madhuri   | Dixit    | 1958-06-11 | Female | Married       |                180 |
+| 10 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
+| 11 | Young     | Actor    | 2000-03-25 | Male   | Single        |                  0 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+11 rows in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> INSERT INTO Actors (FirstName, LastName, DoB, Gender, MaritalStatus,  NetWorthInMillions) VALUES ('Old', 'Actor', '1960-10-02', 'Male', 'Married', -540);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> call ShowActors();
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Jennifer  | Aniston  | 1969-11-02 | Female | Single        |                240 |
+|  2 | Brad      | Pitt     | 1963-12-18 | Male   | Single        |                240 |
+|  3 | Angelina  | Jolie    | 1975-06-04 | Female | Single        |                100 |
+|  4 | Dream     | Actress  | 9999-01-01 | Female | Single        |                110 |
+|  5 | Johnny    | Depp     | 1963-06-09 | Male   | Single        |                200 |
+|  6 | Rishi     | Kapoor   | 1950-02-22 | Male   | Married       |                250 |
+|  7 | Rajni     | Kanth    | 1950-12-12 | Male   | Married       |                 50 |
+|  8 | Hritik    | Roshan   | 1950-02-22 | Male   | Married       |                220 |
+|  9 | Madhuri   | Dixit    | 1958-06-11 | Female | Married       |                180 |
+| 10 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
+| 11 | Young     | Actor    | 2000-03-25 | Male   | Single        |                  0 |
+| 12 | Old       | Actor    | 1960-10-02 | Male   | Married       |                  0 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+12 rows in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> DROP TRIGGER IF EXISTS NetWorthCheck;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> show Triggers;
+Empty set (0.00 sec)
+
+mysql> DELIMITER **
+mysql> CREATE TRIGGER NetWorthCheck
+    -> BEFORE INSERT ON Actors
+    -> FOR EACH ROW 
+    ->   IF  NEW.NetWorthInMillions < 0 OR NEW.NetWorthInMillions IS NULL
+    ->   THEN SET New.NetWorthInMillions = 0;
+    ->   END IF;
+    -> **
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER ;
+mysql> show Triggers;
++---------------+--------+--------+------------------------------------------------------------------------------------------------------------------+--------+------------------------+-----------------------------------------------------------------------------------------------------------------------+----------------+----------------------+----------------------+--------------------+
+| Trigger       | Event  | Table  | Statement                                                                                                        | Timing | Created                | sql_mode                                                                                                              | Definer        | character_set_client | collation_connection | Database Collation |
++---------------+--------+--------+------------------------------------------------------------------------------------------------------------------+--------+------------------------+-----------------------------------------------------------------------------------------------------------------------+----------------+----------------------+----------------------+--------------------+
+| NetWorthCheck | INSERT | Actors | IF  NEW.NetWorthInMillions < 0 OR NEW.NetWorthInMillions IS NULL
+  THEN SET New.NetWorthInMillions = 0;
+  END IF | BEFORE | 2022-12-21 10:06:50.89 | ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION | root@localhost | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
++---------------+--------+--------+------------------------------------------------------------------------------------------------------------------+--------+------------------------+-----------------------------------------------------------------------------------------------------------------------+----------------+----------------------+----------------------+--------------------+
+1 row in set (0.00 sec)
+
+mysql> create table NetWorthStat(AverageNetWorth Decimal(10,4));
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> desc NetWorthStat;
++-----------------+---------------+------+-----+---------+-------+
+| Field           | Type          | Null | Key | Default | Extra |
++-----------------+---------------+------+-----+---------+-------+
+| AverageNetWorth | decimal(10,4) | YES  |     | NULL    |       |
++-----------------+---------------+------+-----+---------+-------+
+1 row in set (0.01 sec)
+
+mysql> insert into NetWorthStat(AverageNetWorth) values (select AVG(NetWorthInMillions) from Actors));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'select AVG(NetWorthInMillions) from Actors))' at line 1
+mysql> insert into NetWorthStat(AverageNetWorth) values ((select AVG(NetWorthInMillions) from Actors));
+Query OK, 1 row affected, 1 warning (0.01 sec)
+
+mysql> desc NetWorthStat;
++-----------------+---------------+------+-----+---------+-------+
+| Field           | Type          | Null | Key | Default | Extra |
++-----------------+---------------+------+-----+---------+-------+
+| AverageNetWorth | decimal(10,4) | YES  |     | NULL    |       |
++-----------------+---------------+------+-----+---------+-------+
+1 row in set (0.01 sec)
+
+mysql> select * from NetWorthStat;
++-----------------+
+| AverageNetWorth |
++-----------------+
+|        161.6667 |
++-----------------+
+1 row in set (0.00 sec)
+
+mysql> DELIMITER **
+mysql> CREATE TRIGGER BeforeActorsInsert
+    -> BEFORE INSERT ON Actors 
+    -> FOR EACH ROW
+    -> BEGIN
+    ->   DECLARE TotalWorth, RowsCount INT;
+    ->           
+    ->   SELECT SUM(NetWorthInMillions) INTO TotalWorth
+    ->   FROM Actors;
+    ->   SELECT COUNT(*) INTO RowsCount
+    ->   FROM Actors;
+    ->  
+    ->   UPDATE NetWorthStats
+    ->   SET AverageNetWorth = ((Totalworth + new.NetWorthInMillions) / (RowsCount+1));
+    -> END **
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER ;
+mysql> 
+mysql> INSERT INTO Actors (FirstName, LastName, DoB, Gender, MaritalStatus, NetWorthInMillions) 
+    -> VALUES ('Charlize', 'Theron', '1975-08-07', 'Female', 'Single', 130);
+ERROR 1146 (42S02): Table 'MovieIndustry.NetWorthStats' doesn't exist
+mysql> drop trigger BeforeActorsInsert;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> INSERT INTO NetWorthStats(AverageNetWorth) 
+    -> Values ((SELECT AVG(NetWorthInMillions) FROM Actors));
+ERROR 1146 (42S02): Table 'MovieIndustry.NetWorthStats' doesn't exist
+mysql> -------------------
+    -> DELIMITER **
+    -> CREATE TRIGGER BeforeActorsInsert
+    -> BEFORE INSERT ON Actors 
+    -> FOR EACH ROW
+    -> BEGIN
+    ->   DECLARE TotalWorth, RowsCount INT;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '-----------------
+DELIMITER **CREATE TRIGGER BeforeActorsInsert
+BEFORE INSERT ON' at line 1
+mysql>           
+mysql>   SELECT SUM(NetWorthInMillions) INTO TotalWorth
+    ->   FROM Actors;
+ERROR 1327 (42000): Undeclared variable: TotalWorth
+mysql>   SELECT COUNT(*) INTO RowsCount
+    ->   FROM Actors;
+ERROR 1327 (42000): Undeclared variable: RowsCount
+mysql>  
+mysql>   UPDATE NetWorthStat
+    ->   SET AverageNetWorth = ((Totalworth + new.NetWorthInMillions) / (RowsCount+1));
+ERROR 1054 (42S22): Unknown column 'Totalworth' in 'field list'
+mysql> END **
+    -> DELIMITER ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'END **
+DELIMITER' at line 1
+mysql> 
+mysql> 
+mysql> 
+mysql> DELIMITER **
+mysql> CREATE TRIGGER BeforeActorsInsert
+    -> BEFORE INSERT ON Actors 
+    -> FOR EACH ROW
+    -> BEGIN
+    ->   DECLARE TotalWorth, RowsCount INT;
+    ->           
+    ->   SELECT SUM(NetWorthInMillions) INTO TotalWorth
+    ->   FROM Actors;
+    ->   SELECT COUNT(*) INTO RowsCount
+    ->   FROM Actors;
+    ->  
+    ->   UPDATE NetWorthStat
+    ->   SET AverageNetWorth = ((Totalworth + new.NetWorthInMillions) / (RowsCount+1));
+    -> END **
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER ;
+mysql> 
+mysql> INSERT INTO Actors (FirstName, LastName, DoB, Gender, MaritalStatus, NetWorthInMillions) 
+    -> VALUES ('Charlize', 'Theron', '1975-08-07', 'Female', 'Single', 130);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> SELECT * FROM NetWorthStats;
+ERROR 1146 (42S02): Table 'MovieIndustry.NetWorthStats' doesn't exist
+mysql> SELECT * FROM NetWorthStat;
++-----------------+
+| AverageNetWorth |
++-----------------+
+|        159.2308 |
++-----------------+
+1 row in set (0.01 sec)
+
+mysql> create table CopyOfActors like Actors;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> select * from CopyOfActors;
+Empty set (0.00 sec)
+
+mysql> show tables;
++-------------------------+
+| Tables_in_MovieIndustry |
++-------------------------+
+| Actors                  |
+| CopyOfActors            |
+| Movies                  |
+| NetWorthStat            |
++-------------------------+
+4 rows in set (0.00 sec)
+
+mysql> desc CopyOfActors;
++--------------------+-----------------------------------------------+------+-----+---------+----------------+
+| Field              | Type                                          | Null | Key | Default | Extra          |
++--------------------+-----------------------------------------------+------+-----+---------+----------------+
+| Id                 | int                                           | NO   | PRI | NULL    | auto_increment |
+| FirstName          | varchar(20)                                   | NO   |     | NULL    |                |
+| LastName           | varchar(120)                                  | YES  |     | NULL    |                |
+| DoB                | date                                          | NO   |     | NULL    |                |
+| Gender             | enum('Male','Female','Other')                 | NO   |     | NULL    |                |
+| MaritalStatus      | enum('Married','Divorced','Single','Unknown') | YES  |     | NULL    |                |
+| NetWorthInMillions | decimal(10,0)                                 | NO   |     | NULL    |                |
++--------------------+-----------------------------------------------+------+-----+---------+----------------+
+7 rows in set (0.00 sec)
+
+mysql> drop table CopyOfActors;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> show tables;
++-------------------------+
+| Tables_in_MovieIndustry |
++-------------------------+
+| Actors                  |
+| Movies                  |
+| NetWorthStat            |
++-------------------------+
+3 rows in set (0.00 sec)
+
+mysql> create table CopyOfActors as select * from Actors;
+Query OK, 13 rows affected (0.03 sec)
+Records: 13  Duplicates: 0  Warnings: 0
+
+mysql> select * from CopyOfActors;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Jennifer  | Aniston  | 1969-11-02 | Female | Single        |                240 |
+|  2 | Brad      | Pitt     | 1963-12-18 | Male   | Single        |                240 |
+|  3 | Angelina  | Jolie    | 1975-06-04 | Female | Single        |                100 |
+|  4 | Dream     | Actress  | 9999-01-01 | Female | Single        |                110 |
+|  5 | Johnny    | Depp     | 1963-06-09 | Male   | Single        |                200 |
+|  6 | Rishi     | Kapoor   | 1950-02-22 | Male   | Married       |                250 |
+|  7 | Rajni     | Kanth    | 1950-12-12 | Male   | Married       |                 50 |
+|  8 | Hritik    | Roshan   | 1950-02-22 | Male   | Married       |                220 |
+|  9 | Madhuri   | Dixit    | 1958-06-11 | Female | Married       |                180 |
+| 10 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
+| 11 | Young     | Actor    | 2000-03-25 | Male   | Single        |                  0 |
+| 12 | Old       | Actor    | 1960-10-02 | Male   | Married       |                  0 |
+| 13 | Charlize  | Theron   | 1975-08-07 | Female | Single        |                130 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+13 rows in set (0.00 sec)
+
+mysql> Alter table CopyOfActors add Age int;
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from CopyOfActors;
++----+-----------+----------+------------+--------+---------------+--------------------+------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions | Age  |
++----+-----------+----------+------------+--------+---------------+--------------------+------+
+|  1 | Jennifer  | Aniston  | 1969-11-02 | Female | Single        |                240 | NULL |
+|  2 | Brad      | Pitt     | 1963-12-18 | Male   | Single        |                240 | NULL |
+|  3 | Angelina  | Jolie    | 1975-06-04 | Female | Single        |                100 | NULL |
+|  4 | Dream     | Actress  | 9999-01-01 | Female | Single        |                110 | NULL |
+|  5 | Johnny    | Depp     | 1963-06-09 | Male   | Single        |                200 | NULL |
+|  6 | Rishi     | Kapoor   | 1950-02-22 | Male   | Married       |                250 | NULL |
+|  7 | Rajni     | Kanth    | 1950-12-12 | Male   | Married       |                 50 | NULL |
+|  8 | Hritik    | Roshan   | 1950-02-22 | Male   | Married       |                220 | NULL |
+|  9 | Madhuri   | Dixit    | 1958-06-11 | Female | Married       |                180 | NULL |
+| 10 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 | NULL |
+| 11 | Young     | Actor    | 2000-03-25 | Male   | Single        |                  0 | NULL |
+| 12 | Old       | Actor    | 1960-10-02 | Male   | Married       |                  0 | NULL |
+| 13 | Charlize  | Theron   | 1975-08-07 | Female | Single        |                130 | NULL |
++----+-----------+----------+------------+--------+---------------+--------------------+------+
+13 rows in set (0.00 sec)
+
+mysql> SELECT TIMESTAMPDIFF(YEAR, DoB, NOW()) INTO Age 
+    ->     FROM CopyOfActorsActors 
+    -> ;   
+ERROR 1327 (42000): Undeclared variable: Age
+mysql> SELECT TIMESTAMPDIFF(YEAR, DoB, NOW())
+    ->     FROM CopyOfActorsActors 
+    ->     WHERE Id = 1;
+ERROR 1146 (42S02): Table 'MovieIndustry.CopyOfActorsActors' doesn't exist
+mysql> SELECT TIMESTAMPDIFF(YEAR, DoB, NOW())
+    ->     FROM CopyOfActors
+    ->     WHERE Id = 1;
++---------------------------------+
+| TIMESTAMPDIFF(YEAR, DoB, NOW()) |
++---------------------------------+
+|                              53 |
++---------------------------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT TIMESTAMPDIFF(YEAR, DoB, NOW())     FROM CopyOfActors     WHERE Id = 2;
++---------------------------------+
+| TIMESTAMPDIFF(YEAR, DoB, NOW()) |
++---------------------------------+
+|                              59 |
++---------------------------------+
+1 row in set (0.00 sec)
+
+mysql> select * from CopyOfActors;
++----+-----------+----------+------------+--------+---------------+--------------------+------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions | Age  |
++----+-----------+----------+------------+--------+---------------+--------------------+------+
+|  1 | Jennifer  | Aniston  | 1969-11-02 | Female | Single        |                240 | NULL |
+|  2 | Brad      | Pitt     | 1963-12-18 | Male   | Single        |                240 | NULL |
+|  3 | Angelina  | Jolie    | 1975-06-04 | Female | Single        |                100 | NULL |
+|  4 | Dream     | Actress  | 9999-01-01 | Female | Single        |                110 | NULL |
+|  5 | Johnny    | Depp     | 1963-06-09 | Male   | Single        |                200 | NULL |
+|  6 | Rishi     | Kapoor   | 1950-02-22 | Male   | Married       |                250 | NULL |
+|  7 | Rajni     | Kanth    | 1950-12-12 | Male   | Married       |                 50 | NULL |
+|  8 | Hritik    | Roshan   | 1950-02-22 | Male   | Married       |                220 | NULL |
+|  9 | Madhuri   | Dixit    | 1958-06-11 | Female | Married       |                180 | NULL |
+| 10 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 | NULL |
+| 11 | Young     | Actor    | 2000-03-25 | Male   | Single        |                  0 | NULL |
+| 12 | Old       | Actor    | 1960-10-02 | Male   | Married       |                  0 | NULL |
+| 13 | Charlize  | Theron   | 1975-08-07 | Female | Single        |                130 | NULL |
++----+-----------+----------+------------+--------+---------------+--------------------+------+
+13 rows in set (0.00 sec)
+
+mysql> DELIMITER **
+mysql> 
+mysql> CREATE PROCEDURE InsertActorsAge()
+    -> BEGIN
+    -> 
+    ->   DECLARE TotalRows INT DEFAULT 0;
+    ->   DECLARE CurrentRow INT;
+    ->   DECLARE ActorAge INT;
+    -> 
+    ->   SET CurrentRow = 1;
+    -> 
+    ->   SELECT COUNT(*) INTO TotalRows 
+    ->   FROM Actors;
+    -> 
+    ->   Print_loop: WHILE CurrentRow < TotalRows DO
+    ->     
+    ->     Update CopyOfActors set Age=(
+    ->     SELECT TIMESTAMPDIFF(YEAR, DoB, NOW())
+    ->     FROM CopyOfActors
+    ->     WHERE Id = CurrentRow) where Id= CurrentRow;
+    -> 
+    ->     SET CurrentRow = CurrentRow + 1;
+    ->   END WHILE Print_loop;
+    -> End **
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> DELIMITER ;
+mysql> 
+mysql> call InsertActorAge();
+ERROR 1305 (42000): PROCEDURE MovieIndustry.InsertActorAge does not exist
+mysql> call InsertActorsAge();
+ERROR 1093 (HY000): You can't specify target table 'CopyOfActors' for update in FROM clause
+mysql> drop procedure InsertActorsAge;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> CREATE PROCEDURE InsertActorsAge()
+    -> BEGIN
+    -> 
+    ->   DECLARE TotalRows INT DEFAULT 0;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 4
+mysql>   DECLARE CurrentRow INT;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'DECLARE CurrentRow INT' at line 1
+mysql>   DECLARE ActorAge INT;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'DECLARE ActorAge INT' at line 1
+mysql> 
+mysql>   SET CurrentRow = 1;
+ERROR 1193 (HY000): Unknown system variable 'CurrentRow'
+mysql> 
+mysql>   SELECT COUNT(*) INTO TotalRows 
+    ->   FROM Actors;
+ERROR 1327 (42000): Undeclared variable: TotalRows
+mysql> 
+mysql>   Print_loop: WHILE CurrentRow < TotalRows DO
+    ->     
+    ->     SELECT TIMESTAMPDIFF(YEAR, DoB, NOW()) into ActorAge
+    ->     FROM CopyOfActors
+    ->     WHERE Id = CurrentRow;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'Print_loop: WHILE CurrentRow < TotalRows DO
+    
+    SELECT TIMESTAMPDIFF(YEAR, ' at line 1
+mysql> 
+mysql>     Update CopyOfActors set Age=ActorAge where Id=CurrentRow;
+ERROR 1054 (42S22): Unknown column 'CurrentRow' in 'where clause'
+mysql>     
+mysql>     SET CurrentRow = CurrentRow + 1;
+ERROR 1193 (HY000): Unknown system variable 'CurrentRow'
+mysql>   END WHILE Print_loop;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'END WHILE Print_loop' at line 1
+mysql> End **
+    -> DELIMITER ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'End **
+DELIMITER' at line 1
+mysql> 
+mysql> 
+mysql> 
+mysql> 
+mysql> DELIMITER **
+mysql> 
+mysql> CREATE PROCEDURE InsertActorsAge()
+    -> BEGIN
+    -> 
+    ->   DECLARE TotalRows INT DEFAULT 0;
+    ->   DECLARE CurrentRow INT;
+    ->   DECLARE ActorAge INT;
+    -> 
+    ->   SET CurrentRow = 1;
+    -> 
+    ->   SELECT COUNT(*) INTO TotalRows 
+    ->   FROM Actors;
+    -> 
+    ->   Print_loop: WHILE CurrentRow < TotalRows DO
+    ->     
+    ->     SELECT TIMESTAMPDIFF(YEAR, DoB, NOW()) into ActorAge
+    ->     FROM CopyOfActors
+    ->     WHERE Id = CurrentRow;
+    -> 
+    ->     Update CopyOfActors set Age=ActorAge where Id=CurrentRow;
+    ->     
+    ->     SET CurrentRow = CurrentRow + 1;
+    ->   END WHILE Print_loop;
+    -> End **
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> DELIMITER ;
+mysql> 
+mysql> call InsertActorsAge();
+Query OK, 1 row affected (0.08 sec)
+
+mysql> select * from CopyOfActors;
++----+-----------+----------+------------+--------+---------------+--------------------+-------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions | Age   |
++----+-----------+----------+------------+--------+---------------+--------------------+-------+
+|  1 | Jennifer  | Aniston  | 1969-11-02 | Female | Single        |                240 |    53 |
+|  2 | Brad      | Pitt     | 1963-12-18 | Male   | Single        |                240 |    59 |
+|  3 | Angelina  | Jolie    | 1975-06-04 | Female | Single        |                100 |    47 |
+|  4 | Dream     | Actress  | 9999-01-01 | Female | Single        |                110 | -7976 |
+|  5 | Johnny    | Depp     | 1963-06-09 | Male   | Single        |                200 |    59 |
+|  6 | Rishi     | Kapoor   | 1950-02-22 | Male   | Married       |                250 |    72 |
+|  7 | Rajni     | Kanth    | 1950-12-12 | Male   | Married       |                 50 |    72 |
+|  8 | Hritik    | Roshan   | 1950-02-22 | Male   | Married       |                220 |    72 |
+|  9 | Madhuri   | Dixit    | 1958-06-11 | Female | Married       |                180 |    64 |
+| 10 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |    66 |
+| 11 | Young     | Actor    | 2000-03-25 | Male   | Single        |                  0 |    22 |
+| 12 | Old       | Actor    | 1960-10-02 | Male   | Married       |                  0 |    62 |
+| 13 | Charlize  | Theron   | 1975-08-07 | Female | Single        |                130 |  NULL |
++----+-----------+----------+------------+--------+---------------+--------------------+-------+
+13 rows in set (0.01 sec)
+
+mysql> update CopyOfActor set Dob="1990-06-23" where FirstName="Dream";
+ERROR 1146 (42S02): Table 'MovieIndustry.CopyOfActor' doesn't exist
+mysql> update CopyOfActors set Dob="1990-06-23" where FirstName="Dream";
+Query OK, 1 row affected (0.02 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from CopyOfActors;
++----+-----------+----------+------------+--------+---------------+--------------------+-------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions | Age   |
++----+-----------+----------+------------+--------+---------------+--------------------+-------+
+|  1 | Jennifer  | Aniston  | 1969-11-02 | Female | Single        |                240 |    53 |
+|  2 | Brad      | Pitt     | 1963-12-18 | Male   | Single        |                240 |    59 |
+|  3 | Angelina  | Jolie    | 1975-06-04 | Female | Single        |                100 |    47 |
+|  4 | Dream     | Actress  | 1990-06-23 | Female | Single        |                110 | -7976 |
+|  5 | Johnny    | Depp     | 1963-06-09 | Male   | Single        |                200 |    59 |
+|  6 | Rishi     | Kapoor   | 1950-02-22 | Male   | Married       |                250 |    72 |
+|  7 | Rajni     | Kanth    | 1950-12-12 | Male   | Married       |                 50 |    72 |
+|  8 | Hritik    | Roshan   | 1950-02-22 | Male   | Married       |                220 |    72 |
+|  9 | Madhuri   | Dixit    | 1958-06-11 | Female | Married       |                180 |    64 |
+| 10 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |    66 |
+| 11 | Young     | Actor    | 2000-03-25 | Male   | Single        |                  0 |    22 |
+| 12 | Old       | Actor    | 1960-10-02 | Male   | Married       |                  0 |    62 |
+| 13 | Charlize  | Theron   | 1975-08-07 | Female | Single        |                130 |  NULL |
++----+-----------+----------+------------+--------+---------------+--------------------+-------+
+13 rows in set (0.00 sec)
+
+mysql> drop procedure InsertActorsAge;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> DELIMITER **
+mysql> 
+mysql> CREATE PROCEDURE InsertActorsAge()
+    -> BEGIN
+    -> 
+    ->   DECLARE TotalRows INT DEFAULT 0;
+    ->   DECLARE CurrentRow INT;
+    ->   DECLARE ActorAge INT;
+    -> 
+    ->   SET CurrentRow = 1;
+    -> 
+    ->   SELECT COUNT(*) INTO TotalRows 
+    ->   FROM Actors;
+    -> 
+    ->   Print_loop: WHILE CurrentRow < (TotalRows+1) DO
+    ->     
+    ->     SELECT TIMESTAMPDIFF(YEAR, DoB, NOW()) into ActorAge
+    ->     FROM CopyOfActors
+    ->     WHERE Id = CurrentRow;
+    -> 
+    ->     Update CopyOfActors set Age=ActorAge where Id=CurrentRow;
+    ->     
+    ->     SET CurrentRow = CurrentRow + 1;
+    ->   END WHILE Print_loop;
+    -> End **
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> DELIMITER ;
+mysql> 
+mysql> call InsertActorsAge();
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from CopyOfActors;
++----+-----------+----------+------------+--------+---------------+--------------------+------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions | Age  |
++----+-----------+----------+------------+--------+---------------+--------------------+------+
+|  1 | Jennifer  | Aniston  | 1969-11-02 | Female | Single        |                240 |   53 |
+|  2 | Brad      | Pitt     | 1963-12-18 | Male   | Single        |                240 |   59 |
+|  3 | Angelina  | Jolie    | 1975-06-04 | Female | Single        |                100 |   47 |
+|  4 | Dream     | Actress  | 1990-06-23 | Female | Single        |                110 |   32 |
+|  5 | Johnny    | Depp     | 1963-06-09 | Male   | Single        |                200 |   59 |
+|  6 | Rishi     | Kapoor   | 1950-02-22 | Male   | Married       |                250 |   72 |
+|  7 | Rajni     | Kanth    | 1950-12-12 | Male   | Married       |                 50 |   72 |
+|  8 | Hritik    | Roshan   | 1950-02-22 | Male   | Married       |                220 |   72 |
+|  9 | Madhuri   | Dixit    | 1958-06-11 | Female | Married       |                180 |   64 |
+| 10 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |   66 |
+| 11 | Young     | Actor    | 2000-03-25 | Male   | Single        |                  0 |   22 |
+| 12 | Old       | Actor    | 1960-10-02 | Male   | Married       |                  0 |   62 |
+| 13 | Charlize  | Theron   | 1975-08-07 | Female | Single        |                130 |   47 |
++----+-----------+----------+------------+--------+---------------+--------------------+------+
+13 rows in set (0.00 sec)
+
+mysql> drop table CopyOfActors;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> show tables;
++-------------------------+
+| Tables_in_MovieIndustry |
++-------------------------+
+| Actors                  |
+| Movies                  |
+| NetWorthStat            |
++-------------------------+
+3 rows in set (0.00 sec)
+
+mysql> select * from NetWorthStat;
++-----------------+
+| AverageNetWorth |
++-----------------+
+|        159.2308 |
++-----------------+
+1 row in set (0.00 sec)
+
+mysql> CREATE TABLE ActorsLogTable (
+    ->     LogId INT AUTO_INCREMENT PRIMARY KEY,
+    ->     ActorId INT NOT NULL,
+    ->     FirstName VARCHAR(20),    
+    ->     LastName VARCHAR(20),
+    ->     DateTime DATETIME DEFAULT NULL,
+    ->     Event VARCHAR(50) DEFAULT NULL
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> desc ActorsLogTable;
++-----------+-------------+------+-----+---------+----------------+
+| Field     | Type        | Null | Key | Default | Extra          |
++-----------+-------------+------+-----+---------+----------------+
+| LogId     | int         | NO   | PRI | NULL    | auto_increment |
+| ActorId   | int         | NO   |     | NULL    |                |
+| FirstName | varchar(20) | YES  |     | NULL    |                |
+| LastName  | varchar(20) | YES  |     | NULL    |                |
+| DateTime  | datetime    | YES  |     | NULL    |                |
+| Event     | varchar(50) | YES  |     | NULL    |                |
++-----------+-------------+------+-----+---------+----------------+
+6 rows in set (0.00 sec)
+
+mysql> select * from  ActorsLogTable;
+Empty set (0.00 sec)
+
+mysql> Delimiter **
+mysql> CREATE TRIGGER AfterActorsInsert 
+    -> AFTER INSERT ON Actors
+    -> FOR EACH ROW 
+    -> INSERT INTO ActorsLogTable
+    -> SET ActorId = NEW.Id, 
+    ->     FirstName = New.FirstName, 
+    ->     LastName = NEW.LastName, 
+    ->     DateTime = NOW(), 
+    ->     Event = 'INSERT';
+    ->   Delimiter ;
+    -> 
+    -> ^C
+mysql> CREATE TRIGGER AfterActorsInsert 
+    -> AFTER INSERT ON Actors
+    -> FOR EACH ROW 
+    -> INSERT INTO ActorsLogTable
+    -> SET ActorId = NEW.Id, 
+    ->     FirstName = New.FirstName, 
+    ->     LastName = NEW.LastName, 
+    ->     DateTime = NOW(), 
+    ->     Event = 'INSERT';
+    -> ;
+    -> ^C
+mysql> exit
+Bye
+raja@shtlp0064:~$ mysql -u root -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 15
+Server version: 8.0.31-0ubuntu0.22.04.1 (Ubuntu)
+
+Copyright (c) 2000, 2022, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> use MovieIndustry;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> show tables;
++-------------------------+
+| Tables_in_MovieIndustry |
++-------------------------+
+| Actors                  |
+| ActorsLogTable          |
+| Movies                  |
+| NetWorthStat            |
++-------------------------+
+4 rows in set (0.00 sec)
+
+mysql> CREATE TRIGGER AfterActorsInsert 
+    -> AFTER INSERT ON Actors
+    -> FOR EACH ROW 
+    -> INSERT INTO ActorsLogTable
+    -> SET ActorId = NEW.Id, 
+    ->     FirstName = New.FirstName, 
+    ->     LastName = NEW.LastName, 
+    ->     DateTime = NOW(), 
+    ->     Event = 'INSERT';
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> select * from ActorsLogTable;
+Empty set (0.00 sec)
+
+mysql> INSERT INTO Actors (FirstName, LastName, DoB, Gender, MaritalStatus, NetWorthInMillions) 
+    -> VALUES ('Matt', 'Damon', '1970-10-08', 'Male', 'Married', 160);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from ActorsLogTable;
++-------+---------+-----------+----------+---------------------+--------+
+| LogId | ActorId | FirstName | LastName | DateTime            | Event  |
++-------+---------+-----------+----------+---------------------+--------+
+|     1 |      14 | Matt      | Damon    | 2022-12-21 12:26:57 | INSERT |
++-------+---------+-----------+----------+---------------------+--------+
+1 row in set (0.00 sec)
+
+mysql> CREATE TRIGGER AfterActorUpdate
+    -> AFTER UPDATE ON Actors 
+    -> FOR EACH ROW
+    -> BEGIN
+    ->    DECLARE TotalWorth, RowsCount INT;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 5
+mysql>    INSERT INTO ActorsLog
+    ->    SET ActorId = NEW.Id, FirstName = New.FirstName, LastName =  NEW.LastName, DateTime = NOW(), Event = 'UPDATE';
+ERROR 1146 (42S02): Table 'MovieIndustry.ActorsLog' doesn't exist
+mysql>  
+mysql>   IF NEW.NetWorthInMillions != OLD.NetWorthInMillions THEN
+    ->     SELECT SUM(NetWorthInMillions) INTO TotalWorth
+    ->     FROM Actors;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'IF NEW.NetWorthInMillions != OLD.NetWorthInMillions THEN
+    SELECT SUM(NetWorth' at line 1
+mysql>     SELECT COUNT(*) INTO RowsCount
+    ->     FROM Actors;
+ERROR 1327 (42000): Undeclared variable: RowsCount
+mysql>  
+mysql>     UPDATE NetWorthStats
+    ->     SET AverageNetWorth = ((Totalworth) / (RowsCount));
+ERROR 1146 (42S02): Table 'MovieIndustry.NetWorthStats' doesn't exist
+mysql> END IF;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'END IF' at line 1
+mysql> END **
+    -> DELIMITER ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'END **
+DELIMITER' at line 1
+mysql> 
+mysql> 
+mysql> 
+mysql> 
+mysql> DELIMITER **
+mysql> CREATE TRIGGER AfterActorUpdate
+    -> AFTER UPDATE ON Actors 
+    -> FOR EACH ROW
+    -> BEGIN
+    ->    DECLARE TotalWorth, RowsCount INT;
+    ->    INSERT INTO ActorsLog
+    ->    SET ActorId = NEW.Id, FirstName = New.FirstName, LastName =  NEW.LastName, DateTime = NOW(), Event = 'UPDATE';
+    ->  
+    ->   IF NEW.NetWorthInMillions != OLD.NetWorthInMillions THEN
+    ->     SELECT SUM(NetWorthInMillions) INTO TotalWorth
+    ->     FROM Actors;
+    ->     SELECT COUNT(*) INTO RowsCount
+    ->     FROM Actors;
+    ->  
+    ->     UPDATE NetWorthStats
+    ->     SET AverageNetWorth = ((Totalworth) / (RowsCount));
+    -> END IF;
+    -> END **
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER ;
+mysql> 
+mysql> 
+mysql> drop trigger AfterActorUpdate;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER **
+mysql> CREATE TRIGGER AfterActorUpdate
+    -> AFTER UPDATE ON Actors 
+    -> FOR EACH ROW
+    -> BEGIN
+    ->    DECLARE TotalWorth, RowsCount INT;
+    ->    INSERT INTO ActorsLog
+    ->    SET ActorId = NEW.Id, FirstName = New.FirstName, LastName =  NEW.LastName, DateTime = NOW(), Event = 'UPDATE';
+    ->  
+    ->   IF NEW.NetWorthInMillions != OLD.NetWorthInMillions THEN
+    ->     SELECT SUM(NetWorthInMillions) INTO TotalWorth
+    ->     FROM Actors;
+    ->     SELECT COUNT(*) INTO RowsCount
+    ->     FROM Actors;
+    ->  
+    ->     UPDATE NetWorthStat
+    ->     SET AverageNetWorth = ((Totalworth) / (RowsCount));
+    -> END IF;
+    -> END **
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> DELIMITER ;
+mysql> select * from NetWorthStat;
++-----------------+
+| AverageNetWorth |
++-----------------+
+|        159.2857 |
++-----------------+
+1 row in set (0.00 sec)
+
+mysql> select * from ActorsLogTable;
++-------+---------+-----------+----------+---------------------+--------+
+| LogId | ActorId | FirstName | LastName | DateTime            | Event  |
++-------+---------+-----------+----------+---------------------+--------+
+|     1 |      14 | Matt      | Damon    | 2022-12-21 12:26:57 | INSERT |
++-------+---------+-----------+----------+---------------------+--------+
+1 row in set (0.00 sec)
+
+mysql> UPDATE Actors
+    -> SET NetWorthInMillions = '100'
+    -> WHERE Id = 5;
+ERROR 1146 (42S02): Table 'MovieIndustry.ActorsLog' doesn't exist
+mysql>  drop trigger AfterActorUpdate;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> 
+mysql> 
+mysql> 
+mysql> 
+mysql> DELIMITER **
+mysql> CREATE TRIGGER AfterActorUpdate
+    -> AFTER UPDATE ON Actors 
+    -> FOR EACH ROW
+    -> BEGIN
+    ->    DECLARE TotalWorth, RowsCount INT;
+    ->    INSERT INTO ActorsLogTable
+    ->    SET ActorId = NEW.Id, FirstName = New.FirstName, LastName =  NEW.LastName, DateTime = NOW(), Event = 'UPDATE';
+    ->  
+    ->   IF NEW.NetWorthInMillions != OLD.NetWorthInMillions THEN
+    ->     SELECT SUM(NetWorthInMillions) INTO TotalWorth
+    ->     FROM Actors;
+    ->     SELECT COUNT(*) INTO RowsCount
+    ->     FROM Actors;
+    ->  
+    ->     UPDATE NetWorthStat
+    ->     SET AverageNetWorth = ((Totalworth) / (RowsCount));
+    -> END IF;
+    -> END **
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER ;
+mysql> 
+mysql> select * from ActorsLogTable;
++-------+---------+-----------+----------+---------------------+--------+
+| LogId | ActorId | FirstName | LastName | DateTime            | Event  |
++-------+---------+-----------+----------+---------------------+--------+
+|     1 |      14 | Matt      | Damon    | 2022-12-21 12:26:57 | INSERT |
++-------+---------+-----------+----------+---------------------+--------+
+1 row in set (0.00 sec)
+
+mysql> UPDATE Actors
+    -> SET NetWorthInMillions = '100'
+    -> WHERE Id = 5;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from ActorsLogTable;
++-------+---------+-----------+----------+---------------------+--------+
+| LogId | ActorId | FirstName | LastName | DateTime            | Event  |
++-------+---------+-----------+----------+---------------------+--------+
+|     1 |      14 | Matt      | Damon    | 2022-12-21 12:26:57 | INSERT |
+|     2 |       5 | Johnny    | Depp     | 2022-12-21 13:14:22 | UPDATE |
++-------+---------+-----------+----------+---------------------+--------+
+2 rows in set (0.00 sec)
+
+mysql> UPDATE Actors
+    -> SET MaritalStatus = 'Single'
+    -> WHERE Id = 7;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from ActorsLogTable;
++-------+---------+-----------+----------+---------------------+--------+
+| LogId | ActorId | FirstName | LastName | DateTime            | Event  |
++-------+---------+-----------+----------+---------------------+--------+
+|     1 |      14 | Matt      | Damon    | 2022-12-21 12:26:57 | INSERT |
+|     2 |       5 | Johnny    | Depp     | 2022-12-21 13:14:22 | UPDATE |
+|     3 |       7 | Rajni     | Kanth    | 2022-12-21 13:17:27 | UPDATE |
++-------+---------+-----------+----------+---------------------+--------+
+3 rows in set (0.00 sec)
+
+mysql> select * from Actors;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Jennifer  | Aniston  | 1969-11-02 | Female | Single        |                240 |
+|  2 | Brad      | Pitt     | 1963-12-18 | Male   | Single        |                240 |
+|  3 | Angelina  | Jolie    | 1975-06-04 | Female | Single        |                100 |
+|  4 | Dream     | Actress  | 9999-01-01 | Female | Single        |                110 |
+|  5 | Johnny    | Depp     | 1963-06-09 | Male   | Single        |                100 |
+|  6 | Rishi     | Kapoor   | 1950-02-22 | Male   | Married       |                250 |
+|  7 | Rajni     | Kanth    | 1950-12-12 | Male   | Single        |                 50 |
+|  8 | Hritik    | Roshan   | 1950-02-22 | Male   | Married       |                220 |
+|  9 | Madhuri   | Dixit    | 1958-06-11 | Female | Married       |                180 |
+| 10 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
+| 11 | Young     | Actor    | 2000-03-25 | Male   | Single        |                  0 |
+| 12 | Old       | Actor    | 1960-10-02 | Male   | Married       |                  0 |
+| 13 | Charlize  | Theron   | 1975-08-07 | Female | Single        |                130 |
+| 14 | Matt      | Damon    | 1970-10-08 | Male   | Married       |                160 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+14 rows in set (0.01 sec)
+
+mysql> CREATE TABLE ActorsArchive (
+    ->        RowId INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+    ->        DeletedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)
+    -> AS (SELECT * FROM Actors WHERE 1=2);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM ActorsArchive;
+Empty set (0.00 sec)
+
+mysql> DELIMITER **
+mysql> CREATE TRIGGER BeforeActorsDelete
+    -> BEFORE DELETE
+    -> ON Actors
+    -> FOR EACH ROW
+    -> BEGIN
+    ->   INSERT INTO ActorsArchive 
+    ->          (Id, Firstname, LastName, DoB, Gender, MaritalStatus, NetWorthInMillions)
+    ->   VALUES (OLD.Id, OLD.Firstname, OLD.LastName, OLD.DoB, OLD.Gender, OLD.MaritalStatus, OLD.NetWorthInMillions);
+    -> END **
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER ;
+mysql> SELECT * FROM ActorsArchive;
+Empty set (0.01 sec)
+
+mysql> SELECT * FROM Actors;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Jennifer  | Aniston  | 1969-11-02 | Female | Single        |                240 |
+|  2 | Brad      | Pitt     | 1963-12-18 | Male   | Single        |                240 |
+|  3 | Angelina  | Jolie    | 1975-06-04 | Female | Single        |                100 |
+|  4 | Dream     | Actress  | 9999-01-01 | Female | Single        |                110 |
+|  5 | Johnny    | Depp     | 1963-06-09 | Male   | Single        |                100 |
+|  6 | Rishi     | Kapoor   | 1950-02-22 | Male   | Married       |                250 |
+|  7 | Rajni     | Kanth    | 1950-12-12 | Male   | Single        |                 50 |
+|  8 | Hritik    | Roshan   | 1950-02-22 | Male   | Married       |                220 |
+|  9 | Madhuri   | Dixit    | 1958-06-11 | Female | Married       |                180 |
+| 10 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
+| 11 | Young     | Actor    | 2000-03-25 | Male   | Single        |                  0 |
+| 12 | Old       | Actor    | 1960-10-02 | Male   | Married       |                  0 |
+| 13 | Charlize  | Theron   | 1975-08-07 | Female | Single        |                130 |
+| 14 | Matt      | Damon    | 1970-10-08 | Male   | Married       |                160 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+14 rows in set (0.00 sec)
+
+mysql> DELETE FROM Actors
+    -> WHERE NetWorthInMillions < 100;
+Query OK, 3 rows affected (0.03 sec)
+
+mysql> SELECT * FROM Actors;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Jennifer  | Aniston  | 1969-11-02 | Female | Single        |                240 |
+|  2 | Brad      | Pitt     | 1963-12-18 | Male   | Single        |                240 |
+|  3 | Angelina  | Jolie    | 1975-06-04 | Female | Single        |                100 |
+|  4 | Dream     | Actress  | 9999-01-01 | Female | Single        |                110 |
+|  5 | Johnny    | Depp     | 1963-06-09 | Male   | Single        |                100 |
+|  6 | Rishi     | Kapoor   | 1950-02-22 | Male   | Married       |                250 |
+|  8 | Hritik    | Roshan   | 1950-02-22 | Male   | Married       |                220 |
+|  9 | Madhuri   | Dixit    | 1958-06-11 | Female | Married       |                180 |
+| 10 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
+| 13 | Charlize  | Theron   | 1975-08-07 | Female | Single        |                130 |
+| 14 | Matt      | Damon    | 1970-10-08 | Male   | Married       |                160 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+11 rows in set (0.00 sec)
+
+mysql> SELECT * FROM ActorsArchive;
++-------+---------------------+----+-----------+----------+------------+--------+---------------+--------------------+
+| RowId | DeletedAt           | Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++-------+---------------------+----+-----------+----------+------------+--------+---------------+--------------------+
+|     1 | 2022-12-21 13:48:25 |  7 | Rajni     | Kanth    | 1950-12-12 | Male   | Single        |                 50 |
+|     2 | 2022-12-21 13:48:25 | 11 | Young     | Actor    | 2000-03-25 | Male   | Single        |                  0 |
+|     3 | 2022-12-21 13:48:25 | 12 | Old       | Actor    | 1960-10-02 | Male   | Married       |                  0 |
++-------+---------------------+----+-----------+----------+------------+--------+---------------+--------------------+
+3 rows in set (0.00 sec)
+
+mysql> select * from ActorsLog;
+ERROR 1146 (42S02): Table 'MovieIndustry.ActorsLog' doesn't exist
+mysql> 
+mysql> 
+mysql> DELIMITER **
+mysql> CREATE TRIGGER AfterActorsDelete
+    -> AFTER DELETE ON Actors 
+    -> FOR EACH ROW
+    -> BEGIN
+    ->    DECLARE TotalWorth, RowsCount INT;
+    ->    
+    ->    INSERT INTO ActorsLogTable
+    ->    SET ActorId = OLD.Id, FirstName = OLD.FirstName, LastName =  OLD.LastName, DateTime = NOW(), Event = 'DELETE';
+    ->    SELECT SUM(NetWorthInMillions) INTO TotalWorth
+    ->    FROM Actors;
+    ->    
+    ->    SELECT COUNT(*) INTO RowsCount
+    ->    FROM Actors;
+    ->  
+    ->    UPDATE NetWorthStat
+    ->    SET AverageNetWorth = ((Totalworth) / (RowsCount));
+    -> END **
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER ;
+mysql> DELIMITER **
+mysql> CREATE TRIGGER AfterActorsDelete
+    -> AFTER DELETE ON Actors 
+    -> FOR EACH ROW
+    -> BEGIN
+    ->    DECLARE TotalWorth, RowsCount INT;
+    ->    
+    ->    INSERT INTO ActorsLogTable
+    ->    SET ActorId = OLD.Id, FirstName = OLD.FirstName, LastName =  OLD.LastName, DateTime = NOW(), Event = 'DELETE';
+    ->    SELECT SUM(NetWorthInMillions) INTO TotalWorth
+    ->    FROM Actors;
+    ->    
+    ->    SELECT COUNT(*) INTO RowsCount
+    ->    FROM Actors;
+    ->  
+    ->    UPDATE NetWorthStat
+    ->    SET AverageNetWorth = ((Totalworth) / (RowsCount));
+    -> END **
+ERROR 1359 (HY000): Trigger already exists
+mysql> DELIMITER ;
+mysql> 
+mysql> 
+mysql> DELETE FROM Actors
+    -> WHERE Id = 13;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM NetWorthStat;
++-----------------+
+| AverageNetWorth |
++-----------------+
+|        195.0000 |
++-----------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT * FROM ActorsLogTable;
++-------+---------+-----------+----------+---------------------+--------+
+| LogId | ActorId | FirstName | LastName | DateTime            | Event  |
++-------+---------+-----------+----------+---------------------+--------+
+|     1 |      14 | Matt      | Damon    | 2022-12-21 12:26:57 | INSERT |
+|     2 |       5 | Johnny    | Depp     | 2022-12-21 13:14:22 | UPDATE |
+|     3 |       7 | Rajni     | Kanth    | 2022-12-21 13:17:27 | UPDATE |
+|     4 |      13 | Charlize  | Theron   | 2022-12-21 13:54:57 | DELETE |
++-------+---------+-----------+----------+---------------------+--------+
+4 rows in set (0.00 sec)
+
+mysql> select * from Actors;
++----+-----------+----------+------------+--------+---------------+--------------------+
+| Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++----+-----------+----------+------------+--------+---------------+--------------------+
+|  1 | Jennifer  | Aniston  | 1969-11-02 | Female | Single        |                240 |
+|  2 | Brad      | Pitt     | 1963-12-18 | Male   | Single        |                240 |
+|  3 | Angelina  | Jolie    | 1975-06-04 | Female | Single        |                100 |
+|  4 | Dream     | Actress  | 9999-01-01 | Female | Single        |                110 |
+|  5 | Johnny    | Depp     | 1963-06-09 | Male   | Single        |                100 |
+|  6 | Rishi     | Kapoor   | 1950-02-22 | Male   | Married       |                250 |
+|  8 | Hritik    | Roshan   | 1950-02-22 | Male   | Married       |                220 |
+|  9 | Madhuri   | Dixit    | 1958-06-11 | Female | Married       |                180 |
+| 10 | Tom       | Hanks    | 1956-07-09 | Male   | Married       |                350 |
+| 14 | Matt      | Damon    | 1970-10-08 | Male   | Married       |                160 |
++----+-----------+----------+------------+--------+---------------+--------------------+
+10 rows in set (0.00 sec)
+
+mysql> SELECT * FROM ActorsArchive;
++-------+---------------------+----+-----------+----------+------------+--------+---------------+--------------------+
+| RowId | DeletedAt           | Id | FirstName | LastName | DoB        | Gender | MaritalStatus | NetWorthInMillions |
++-------+---------------------+----+-----------+----------+------------+--------+---------------+--------------------+
+|     1 | 2022-12-21 13:48:25 |  7 | Rajni     | Kanth    | 1950-12-12 | Male   | Single        |                 50 |
+|     2 | 2022-12-21 13:48:25 | 11 | Young     | Actor    | 2000-03-25 | Male   | Single        |                  0 |
+|     3 | 2022-12-21 13:48:25 | 12 | Old       | Actor    | 1960-10-02 | Male   | Married       |                  0 |
+|     4 | 2022-12-21 13:54:57 | 13 | Charlize  | Theron   | 1975-08-07 | Female | Single        |                130 |
++-------+---------------------+----+-----------+----------+------------+--------+---------------+--------------------+
+4 rows in set (0.00 sec)
+
+mysql> CREATE TABLE GenderSummary (
+    ->   TotalMales INT NOT NULL,
+    ->   TotalFemales INT NOT NULL
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql>  
+mysql> CREATE TABLE MaritalStatusSummary (
+    ->   TotalSingle INT NOT NULL,
+    ->   TotalMarried INT NOT NULL,
+    ->   TotalDivorced INT NOT NULL
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql>  
+mysql> CREATE TABLE ActorsTableLog (
+    ->   RowId INT AUTO_INCREMENT PRIMARY KEY,
+    ->   ActorId INT NOT NULL,
+    ->   Detail VARCHAR(100) NOT NULL,
+    ->   UpdatedOn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> INSERT INTO GenderSummary (TotalMales, TotalFemales) 
+    -> Values ((SELECT COUNT(Gender) FROM Actors WHERE Gender = 'Male'),
+    ->         (SELECT COUNT(Gender) FROM Actors WHERE Gender = 'Female'));
+Query OK, 1 row affected (0.01 sec)
+
+mysql>  
+mysql> SELECT * FROM GenderSummary;
++------------+--------------+
+| TotalMales | TotalFemales |
++------------+--------------+
+|          6 |            4 |
++------------+--------------+
+1 row in set (0.00 sec)
+
+mysql>  
+mysql> INSERT INTO MaritalStatusSummary (TotalSingle, TotalMarried, TotalDivorced) 
+    -> Values ((SELECT COUNT(MaritalStatus) FROM Actors WHERE MaritalStatus = 'Single'),
+    ->         (SELECT COUNT(MaritalStatus) FROM Actors WHERE MaritalStatus = 'Married'),
+    ->         (SELECT COUNT(MaritalStatus) FROM Actors WHERE MaritalStatus = 'Divorced'));
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM MaritalStatusSummary;
++-------------+--------------+---------------+
+| TotalSingle | TotalMarried | TotalDivorced |
++-------------+--------------+---------------+
+|           5 |            5 |             0 |
++-------------+--------------+---------------+
+1 row in set (0.00 sec)
+
+mysql> update Actors set MaitalStatus="Divorced" where Id=4;
+ERROR 1054 (42S22): Unknown column 'MaitalStatus' in 'field list'
+mysql> update Actors set MaritalStatus="Divorced" where Id=4;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM MaritalStatusSummary;
++-------------+--------------+---------------+
+| TotalSingle | TotalMarried | TotalDivorced |
++-------------+--------------+---------------+
+|           5 |            5 |             0 |
++-------------+--------------+---------------+
+1 row in set (0.00 sec)
+
+mysql> drop table MaritalStatusSummary;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> CREATE TABLE MaritalStatusSummary (
+    ->   TotalSingle INT NOT NULL,
+    ->   TotalMarried INT NOT NULL,
+    ->   TotalDivorced INT NOT NULL
+    -> );
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> SELECT * FROM MaritalStatusSummary;
+Empty set (0.00 sec)
+
+mysql> INSERT INTO MaritalStatusSummary (TotalSingle, TotalMarried, TotalDivorced) 
+    -> Values ((SELECT COUNT(MaritalStatus) FROM Actors WHERE MaritalStatus = 'Single'),
+    ->         (SELECT COUNT(MaritalStatus) FROM Actors WHERE MaritalStatus = 'Married'),
+    ->         (SELECT COUNT(MaritalStatus) FROM Actors WHERE MaritalStatus = 'Divorced'));
+Query OK, 1 row affected (0.02 sec)
+
+mysql> drop table MaritalStatusSummary;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> INSERT INTO MaritalStatusSummary (TotalSingle, TotalMarried, TotalDivorced) 
+    -> Values ((SELECT COUNT(MaritalStatus) FROM Actors WHERE MaritalStatus = 'Single'),
+    ->         (SELECT COUNT(MaritalStatus) FROM Actors WHERE MaritalStatus = 'Married'),
+    ->         (SELECT COUNT(MaritalStatus) FROM Actors WHERE MaritalStatus = 'Divorced'));
+ERROR 1146 (42S02): Table 'MovieIndustry.MaritalStatusSummary' doesn't exist
+mysql> 
+mysql> 
+mysql> CREATE TABLE MaritalStatusSummary (
+    ->     ->   TotalSingle INT NOT NULL,
+    ->     ->   TotalMarried INT NOT NULL,
+    ->     ->   TotalDivorced INT NOT NULL
+    ->     -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '->   TotalSingle INT NOT NULL,
+    ->   TotalMarried INT NOT NULL,
+    ->   Tota' at line 2
+mysql> Query OK, 
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'Query OK,' at line 1
+mysql> 
+mysql> 
+mysql> 
+mysql> 
+mysql> CREATE TABLE MaritalStatusSummary (
+    ->   TotalSingle INT NOT NULL,
+    ->   TotalMarried INT NOT NULL,
+    ->   TotalDivorced INT NOT NULL
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> INSERT INTO MaritalStatusSummary (TotalSingle, TotalMarried, TotalDivorced) 
+    -> Values ((SELECT COUNT(MaritalStatus) FROM Actors WHERE MaritalStatus = 'Single'),
+    ->         (SELECT COUNT(MaritalStatus) FROM Actors WHERE MaritalStatus = 'Married'),
+    ->         (SELECT COUNT(MaritalStatus) FROM Actors WHERE MaritalStatus = 'Divorced'));
+Query OK, 1 row affected (0.00 sec)
+
+mysql>  
+mysql> SELECT * FROM MaritalStatusSummary;
++-------------+--------------+---------------+
+| TotalSingle | TotalMarried | TotalDivorced |
++-------------+--------------+---------------+
+|           4 |            5 |             1 |
++-------------+--------------+---------------+
+1 row in set (0.00 sec)
+
+mysql> DELIMITER **
+mysql> CREATE TRIGGER UpdateGenderSummary
+    -> AFTER INSERT
+    -> ON Actors 
+    -> FOR EACH ROW
+    -> BEGIN
+    -> DECLARE count INT;
+    -> IF NEW.Gender = 'Male' THEN
+    ->     UPDATE GenderSummary
+    ->    SET TotalMales = TotalMales+1;
+    ->    INSERT INTO ActorsTableLog (ActorId, Detail) 
+    ->    VALUES (NEW.Id, 'Total Males value of GenderSummary table changed.');
+    -> ELSE  
+    ->    UPDATE GenderSummary
+    ->    SET TotalFemales = TotalFemales+1;
+    ->    INSERT INTO ActorsTableLog (ActorId, Detail) 
+    ->    VALUES (NEW.Id, 'TotalFemales value of GenderSummary table changed.');
+    -> END IF;
+    -> END  **
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER ;
+mysql> 
+mysql> DELIMITER **
+mysql> CREATE TRIGGER UpdateMaritalStatusSummary
+    -> AFTER INSERT
+    -> ON Actors 
+    -> FOR EACH ROW
+    -> FOLLOWS UpdateGenderSummary
+    -> BEGIN
+    -> DECLARE count INT;
+    -> IF NEW.MaritalStatus = 'Single' THEN
+    ->     UPDATE MaritalStatusSummary
+    ->    SET TotalSingle = TotalSingle+1;
+    ->    INSERT INTO ActorsTableLog (ActorId, Detail) 
+    ->    VALUES (NEW.Id, 'TotalSingle value of MaritalStatusSummary table changed.');
+    -> ELSEIF  NEW.MaritalStatus = 'Married' THEN
+    ->     UPDATE MaritalStatusSummary
+    ->    SET TotalMarried = TotalMarried+1;
+    ->    INSERT INTO ActorsTableLog (ActorId, Detail) 
+    ->    VALUES (NEW.Id, 'TotalMarried value of MaritalStatusSummary table changed.');
+    -> ELSE
+    ->    UPDATE MaritalStatusSummary
+    ->    SET TotalDivorced = TotalDivorced+1;
+    ->    INSERT INTO ActorsTableLog (ActorId, Detail) 
+    ->    VALUES (NEW.Id, 'TotalDivorced value of MaritalStatusSummary table changed.');
+    -> END IF;
+    -> END  **
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER ;
+mysql> 
+mysql> INSERT INTO Actors (FirstName, LastName, DoB, Gender, MaritalStatus,  NetWorthInMillions) 
+    -> VALUES ('Tom', 'Hanks', '1956-07-09', 'Male', 'Married', 350);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> SELECT * FROM ActorsTableLog;
++-------+---------+-----------------------------------------------------------+---------------------+
+| RowId | ActorId | Detail                                                    | UpdatedOn           |
++-------+---------+-----------------------------------------------------------+---------------------+
+|     1 |      15 | Total Males value of GenderSummary table changed.         | 2022-12-21 15:13:48 |
+|     2 |      15 | TotalMarried value of MaritalStatusSummary table changed. | 2022-12-21 15:13:48 |
++-------+---------+-----------------------------------------------------------+---------------------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT * FROM MaritalStatusSummary;
++-------------+--------------+---------------+
+| TotalSingle | TotalMarried | TotalDivorced |
++-------------+--------------+---------------+
+|           4 |            6 |             1 |
++-------------+--------------+---------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT * FROM GenderSummary;
++------------+--------------+
+| TotalMales | TotalFemales |
++------------+--------------+
+|          7 |            4 |
++------------+--------------+
+1 row in set (0.00 sec)
+
+mysql> SHOW TRIGGERS;
++----------------------------+--------+--------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------+------------------------+-----------------------------------------------------------------------------------------------------------------------+----------------+----------------------+----------------------+--------------------+
+| Trigger                    | Event  | Table  | Statement                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | Timing | Created                | sql_mode                                                                                                              | Definer        | character_set_client | collation_connection | Database Collation |
++----------------------------+--------+--------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------+------------------------+-----------------------------------------------------------------------------------------------------------------------+----------------+----------------------+----------------------+--------------------+
+| NetWorthCheck              | INSERT | Actors | IF  NEW.NetWorthInMillions < 0 OR NEW.NetWorthInMillions IS NULL
+  THEN SET New.NetWorthInMillions = 0;
+  END IF                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | BEFORE | 2022-12-21 10:06:50.89 | ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION | root@localhost | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| BeforeActorsInsert         | INSERT | Actors | BEGIN
+  DECLARE TotalWorth, RowsCount INT;
+          
+  SELECT SUM(NetWorthInMillions) INTO TotalWorth
+  FROM Actors;
+  SELECT COUNT(*) INTO RowsCount
+  FROM Actors;
+ 
+  UPDATE NetWorthStat
+  SET AverageNetWorth = ((Totalworth + new.NetWorthInMillions) / (RowsCount+1));
+END                                                                                                                                                                                                                                                                                                                                                                                                                                                               | BEFORE | 2022-12-21 10:26:28.26 | ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION | root@localhost | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| AfterActorsInsert          | INSERT | Actors | INSERT INTO ActorsLogTable
+SET ActorId = NEW.Id, 
+    FirstName = New.FirstName, 
+    LastName = NEW.LastName, 
+    DateTime = NOW(), 
+    Event = 'INSERT'                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | AFTER  | 2022-12-21 12:25:59.59 | ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION | root@localhost | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| UpdateGenderSummary        | INSERT | Actors | BEGIN
+DECLARE count INT;
+IF NEW.Gender = 'Male' THEN
+    UPDATE GenderSummary
+   SET TotalMales = TotalMales+1;
+   INSERT INTO ActorsTableLog (ActorId, Detail) 
+   VALUES (NEW.Id, 'Total Males value of GenderSummary table changed.');
+ELSE  
+   UPDATE GenderSummary
+   SET TotalFemales = TotalFemales+1;
+   INSERT INTO ActorsTableLog (ActorId, Detail) 
+   VALUES (NEW.Id, 'TotalFemales value of GenderSummary table changed.');
+END IF;
+END                                                                                                                                                                                                                                                                                            | AFTER  | 2022-12-21 15:12:50.03 | ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION | root@localhost | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| UpdateMaritalStatusSummary | INSERT | Actors | BEGIN
+DECLARE count INT;
+IF NEW.MaritalStatus = 'Single' THEN
+    UPDATE MaritalStatusSummary
+   SET TotalSingle = TotalSingle+1;
+   INSERT INTO ActorsTableLog (ActorId, Detail) 
+   VALUES (NEW.Id, 'TotalSingle value of MaritalStatusSummary table changed.');
+ELSEIF  NEW.MaritalStatus = 'Married' THEN
+    UPDATE MaritalStatusSummary
+   SET TotalMarried = TotalMarried+1;
+   INSERT INTO ActorsTableLog (ActorId, Detail) 
+   VALUES (NEW.Id, 'TotalMarried value of MaritalStatusSummary table changed.');
+ELSE
+   UPDATE MaritalStatusSummary
+   SET TotalDivorced = TotalDivorced+1;
+   INSERT INTO ActorsTableLog (ActorId, Detail) 
+   VALUES (NEW.Id, 'TotalDivorced value of MaritalStatusSummary table changed.');
+END IF;
+END | AFTER  | 2022-12-21 15:13:32.79 | ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION | root@localhost | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| AfterActorUpdate           | UPDATE | Actors | BEGIN
+   DECLARE TotalWorth, RowsCount INT;
+   INSERT INTO ActorsLogTable
+   SET ActorId = NEW.Id, FirstName = New.FirstName, LastName =  NEW.LastName, DateTime = NOW(), Event = 'UPDATE';
+ 
+  IF NEW.NetWorthInMillions != OLD.NetWorthInMillions THEN
+    SELECT SUM(NetWorthInMillions) INTO TotalWorth
+    FROM Actors;
+    SELECT COUNT(*) INTO RowsCount
+    FROM Actors;
+ 
+    UPDATE NetWorthStat
+    SET AverageNetWorth = ((Totalworth) / (RowsCount));
+END IF;
+END                                                                                                                                                                                                                                                                   | AFTER  | 2022-12-21 13:13:51.15 | ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION | root@localhost | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| BeforeActorsDelete         | DELETE | Actors | BEGIN
+  INSERT INTO ActorsArchive 
+         (Id, Firstname, LastName, DoB, Gender, MaritalStatus, NetWorthInMillions)
+  VALUES (OLD.Id, OLD.Firstname, OLD.LastName, OLD.DoB, OLD.Gender, OLD.MaritalStatus, OLD.NetWorthInMillions);
+END                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | BEFORE | 2022-12-21 13:47:38.33 | ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION | root@localhost | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| AfterActorsDelete          | DELETE | Actors | BEGIN
+   DECLARE TotalWorth, RowsCount INT;
+   
+   INSERT INTO ActorsLogTable
+   SET ActorId = OLD.Id, FirstName = OLD.FirstName, LastName =  OLD.LastName, DateTime = NOW(), Event = 'DELETE';
+   SELECT SUM(NetWorthInMillions) INTO TotalWorth
+   FROM Actors;
+   
+   SELECT COUNT(*) INTO RowsCount
+   FROM Actors;
+ 
+   UPDATE NetWorthStat
+   SET AverageNetWorth = ((Totalworth) / (RowsCount));
+END                                                                                                                                                                                                                                                                                                                                      | AFTER  | 2022-12-21 13:53:52.56 | ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION | root@localhost | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
++----------------------------+--------+--------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------+------------------------+-----------------------------------------------------------------------------------------------------------------------+----------------+----------------------+----------------------+--------------------+
+8 rows in set (0.00 sec)
+
+mysql> SELECT
+    ->     trigger_name,
+    ->     action_order
+    -> FROM
+    ->     information_schema.triggers
+    -> WHERE
+    ->     trigger_schema = 'MovieIndustry';
++----------------------------+--------------+
+| TRIGGER_NAME               | ACTION_ORDER |
++----------------------------+--------------+
+| NetWorthCheck              |            1 |
+| BeforeActorsInsert         |            2 |
+| AfterActorsInsert          |            1 |
+| AfterActorUpdate           |            1 |
+| BeforeActorsDelete         |            1 |
+| AfterActorsDelete          |            1 |
+| UpdateGenderSummary        |            2 |
+| UpdateMaritalStatusSummary |            3 |
++----------------------------+--------------+
+8 rows in set (0.00 sec)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
